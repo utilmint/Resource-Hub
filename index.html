@@ -1,0 +1,4342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resource Hub — Free Learning Resources for Any Topic</title>
+<meta name="description" content="Search any topic — HTML, Python, AI, Cloud, Interview Prep and more — and instantly find curated free learning resources. A single-file, frontend-only web app.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%231F6F5C%22/><text x=%2250%22 y=%2266%22 font-size=%2246%22 font-family=%22monospace%22 fill=%22white%22 text-anchor=%22middle%22>RH</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css">
+<style>
+/* =========================================================
+   RESOURCE HUB — Design System
+   Concept: the digital card-catalog. Every resource carries a
+   library-style call number; browsing feels like flipping
+   through a well-kept index.
+   ========================================================= */
+
+/* ---------- Fonts ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+/* ---------- Tokens ---------- */
+:root{
+  --paper:#F6F5F0;
+  --paper-raised:#FFFFFF;
+  --ink:#1B1B1F;
+  --ink-soft:#5B5A55;
+  --ink-faint:#8A8880;
+  --line:#DEDAD0;
+  --line-strong:#C7C2B4;
+  --accent:#1F6F5C;
+  --accent-ink:#0F3F34;
+  --accent-soft:#DCEBE6;
+  --amber:#B5760A;
+  --amber-soft:#F3E3C2;
+  --danger:#B23A34;
+  --danger-soft:#F5DEDC;
+  --shadow-sm: 0 1px 2px rgba(27,27,31,0.06), 0 1px 1px rgba(27,27,31,0.04);
+  --shadow-md: 0 6px 20px rgba(27,27,31,0.08), 0 2px 6px rgba(27,27,31,0.05);
+  --shadow-lg: 0 20px 45px rgba(27,27,31,0.14), 0 6px 16px rgba(27,27,31,0.08);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  --header-h: 72px;
+  --max-w: 1240px;
+  --transition: 180ms cubic-bezier(.4,0,.2,1);
+}
+
+[data-theme="dark"]{
+  --paper:#141519;
+  --paper-raised:#1C1E23;
+  --ink:#ECEAE2;
+  --ink-soft:#ADAAA0;
+  --ink-faint:#726F66;
+  --line:#2B2D33;
+  --line-strong:#3B3E45;
+  --accent:#45BC9C;
+  --accent-ink:#BEEBDC;
+  --accent-soft:#1D3A33;
+  --amber:#E7AE4B;
+  --amber-soft:#3A2F1A;
+  --danger:#E17872;
+  --danger-soft:#3B2422;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 6px 20px rgba(0,0,0,0.35);
+  --shadow-lg: 0 20px 45px rgba(0,0,0,0.5);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  transition:background var(--transition), color var(--transition);
+  overflow-x:hidden;
+}
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+button{ font-family:inherit; cursor:pointer; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.15; margin:0 0 .5em; letter-spacing:-0.01em; }
+p{ margin:0 0 1em; color:var(--ink-soft); }
+ul{ margin:0; padding:0; list-style:none; }
+.mono{ font-family:var(--font-mono); }
+
+/* ---------- Focus ---------- */
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:4px; }
+
+/* ---------- Layout helpers ---------- */
+.container{ max-width:var(--max-w); margin:0 auto; padding:0 24px; }
+.visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.skip-link{ position:absolute; left:12px; top:-48px; background:var(--accent); color:#fff; padding:10px 16px; border-radius:8px; z-index:1000; transition:top var(--transition); }
+.skip-link:focus{ top:12px; }
+
+/* ---------- Header ---------- */
+.site-header{
+  position:sticky; top:0; z-index:200;
+  height:var(--header-h);
+  display:flex; align-items:center;
+  background:color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter:blur(14px) saturate(1.4);
+  -webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border-bottom:1px solid var(--line);
+}
+.site-header .container{ display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.brand{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:1.3rem; color:var(--ink); flex-shrink:0; }
+.brand .brand-mark{
+  width:34px; height:34px; border-radius:8px; background:var(--accent); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:.75rem; font-weight:600;
+  box-shadow:var(--shadow-sm);
+}
+.main-nav{ display:flex; align-items:center; gap:4px; }
+.main-nav a{
+  padding:8px 14px; border-radius:8px; font-size:.92rem; font-weight:500; color:var(--ink-soft);
+  transition:background var(--transition), color var(--transition);
+  white-space:nowrap;
+}
+.main-nav a:hover{ background:var(--accent-soft); color:var(--accent-ink); }
+.main-nav a.active{ color:var(--accent); font-weight:600; }
+.header-actions{ display:flex; align-items:center; gap:10px; }
+.icon-btn{
+  width:40px; height:40px; border-radius:10px; border:1px solid var(--line); background:var(--paper-raised);
+  color:var(--ink); display:flex; align-items:center; justify-content:center; font-size:1.05rem;
+  transition:border-color var(--transition), transform var(--transition), background var(--transition);
+}
+.icon-btn:hover{ border-color:var(--accent); transform:translateY(-1px); }
+.nav-toggle{ display:none; }
+
+@media (max-width: 960px){
+  .main-nav{
+    position:fixed; inset:var(--header-h) 0 0 0; height:calc(100vh - var(--header-h));
+    background:var(--paper); flex-direction:column; align-items:stretch; padding:16px;
+    transform:translateX(100%); transition:transform var(--transition); overflow-y:auto; gap:2px;
+  }
+  .main-nav.open{ transform:translateX(0); }
+  .main-nav a{ padding:14px 16px; font-size:1.05rem; border-bottom:1px solid var(--line); border-radius:0; }
+  .nav-toggle{ display:flex; }
+}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:11px 20px; border-radius:9px; font-size:.92rem; font-weight:600; border:1px solid transparent;
+  transition:transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition), color var(--transition);
+  white-space:nowrap;
+}
+.btn:active{ transform:scale(.97); }
+.btn-primary{ background:var(--accent); color:#fff; box-shadow:var(--shadow-sm); }
+.btn-primary:hover{ box-shadow:var(--shadow-md); transform:translateY(-1px); }
+.btn-secondary{ background:var(--paper-raised); color:var(--ink); border-color:var(--line-strong); }
+.btn-secondary:hover{ border-color:var(--accent); color:var(--accent-ink); }
+.btn-ghost{ background:transparent; color:var(--ink-soft); }
+.btn-ghost:hover{ background:var(--accent-soft); color:var(--accent-ink); }
+.btn-sm{ padding:7px 12px; font-size:.8rem; border-radius:7px; }
+.btn-icon{ width:38px; height:38px; padding:0; border-radius:8px; }
+.btn[disabled]{ opacity:.5; cursor:not-allowed; }
+
+/* ---------- Hero ---------- */
+.hero{ padding:64px 0 40px; position:relative; }
+.hero-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center; }
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:.75rem;
+  letter-spacing:.06em; color:var(--accent); background:var(--accent-soft); padding:6px 12px; border-radius:20px;
+  margin-bottom:18px; text-transform:uppercase;
+}
+.hero h1{ font-size:clamp(2.2rem, 4.5vw, 3.6rem); }
+.hero h1 em{ font-style:italic; color:var(--accent); }
+.hero-sub{ font-size:1.1rem; max-width:52ch; }
+.hero-search{ margin-top:28px; max-width:560px; }
+
+.card-catalog{ position:relative; }
+.drawer{
+  background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg); padding:22px; transform:rotate(1.2deg);
+}
+.drawer .drawer-label{ font-family:var(--font-mono); font-size:.72rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px; display:flex; justify-content:space-between; }
+.drawer .index-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin-bottom:8px;
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+  transform:rotate(-.6deg);
+}
+.drawer .index-card:nth-child(even){ transform:rotate(.5deg); }
+.drawer .index-card .code{ font-family:var(--font-mono); font-size:.72rem; color:var(--accent); font-weight:600; }
+.drawer .index-card .name{ font-size:.86rem; font-weight:600; color:var(--ink); }
+.drawer .index-card .sub{ font-size:.72rem; color:var(--ink-faint); }
+
+@media (max-width: 860px){
+  .hero-grid{ grid-template-columns:1fr; }
+  .card-catalog{ order:-1; }
+}
+
+/* ---------- Search ---------- */
+.search-box{ position:relative; }
+.search-input-wrap{
+  display:flex; align-items:center; gap:10px; background:var(--paper-raised); border:1.5px solid var(--line-strong);
+  border-radius:12px; padding:6px 6px 6px 16px; box-shadow:var(--shadow-sm); transition:border-color var(--transition), box-shadow var(--transition);
+}
+.search-input-wrap:focus-within{ border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
+.search-input-wrap i, .search-input-wrap svg{ color:var(--ink-faint); flex-shrink:0; }
+.search-input-wrap input{
+  flex:1; border:none; outline:none; background:transparent; font-size:1rem; padding:10px 0; color:var(--ink); font-family:var(--font-body);
+}
+.search-input-wrap input::placeholder{ color:var(--ink-faint); }
+.search-clear{ display:none; }
+.search-input-wrap.has-value .search-clear{ display:flex; }
+
+.search-suggestions{
+  position:absolute; top:calc(100% + 8px); left:0; right:0; background:var(--paper-raised); border:1px solid var(--line);
+  border-radius:12px; box-shadow:var(--shadow-lg); z-index:300; max-height:420px; overflow-y:auto; display:none;
+}
+.search-suggestions.open{ display:block; }
+.search-suggestions .sg-section{ padding:10px 16px 4px; font-family:var(--font-mono); font-size:.68rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); }
+.search-suggestions .sg-item{
+  display:flex; align-items:center; gap:12px; padding:10px 16px; cursor:pointer; transition:background var(--transition);
+}
+.search-suggestions .sg-item:hover, .search-suggestions .sg-item.active{ background:var(--accent-soft); }
+.search-suggestions .sg-item .sg-title{ font-weight:600; font-size:.9rem; }
+.search-suggestions .sg-item .sg-meta{ font-size:.76rem; color:var(--ink-faint); }
+.search-suggestions .sg-item mark{ background:var(--amber-soft); color:var(--ink); border-radius:3px; padding:0 2px; }
+.search-suggestions .sg-empty{ padding:20px 16px; color:var(--ink-faint); font-size:.9rem; text-align:center; }
+.search-suggestions .sg-chip-row{ display:flex; flex-wrap:wrap; gap:8px; padding:8px 16px 14px; }
+.chip{
+  font-family:var(--font-mono); font-size:.74rem; padding:6px 10px; border-radius:20px; background:var(--paper);
+  border:1px solid var(--line); color:var(--ink-soft); transition:all var(--transition);
+}
+.chip:hover{ border-color:var(--accent); color:var(--accent-ink); }
+
+/* ---------- Section headers ---------- */
+.section{ padding:56px 0; }
+.section-tight{ padding:32px 0; }
+.section-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:28px; flex-wrap:wrap; }
+.section-head .eyebrow{ margin-bottom:8px; }
+.section-head h2{ font-size:clamp(1.5rem,3vw,2.1rem); margin:0; }
+.section-head p{ margin:6px 0 0; max-width:60ch; }
+
+/* ---------- Stat strip ---------- */
+.stat-strip{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden; }
+.stat-strip .stat{ background:var(--paper-raised); padding:22px 20px; }
+.stat .stat-num{ font-family:var(--font-display); font-size:2rem; font-weight:700; color:var(--accent); }
+.stat .stat-label{ font-family:var(--font-mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-top:4px; }
+@media (max-width:760px){ .stat-strip{ grid-template-columns:repeat(2,1fr); } }
+
+/* ---------- Category chips grid ---------- */
+.category-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+.category-card{
+  background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md); padding:18px;
+  transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  display:flex; flex-direction:column; gap:8px;
+}
+.category-card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--accent); }
+.category-card .cc-code{ font-family:var(--font-mono); font-size:.7rem; color:var(--accent); }
+.category-card .cc-name{ font-weight:600; font-size:1.02rem; }
+.category-card .cc-count{ font-size:.78rem; color:var(--ink-faint); }
+
+/* ---------- Resource grid & cards ---------- */
+.resource-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+.resource-card{
+  background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md);
+  padding:20px; display:flex; flex-direction:column; gap:10px; position:relative;
+  box-shadow:var(--shadow-sm); transition:transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+.resource-card::before{
+  content:""; position:absolute; top:14px; right:14px; width:8px; height:8px; border-radius:50%;
+  background:var(--line-strong);
+}
+.resource-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:var(--line-strong); }
+.rc-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.rc-call{ font-family:var(--font-mono); font-size:.7rem; color:var(--accent); background:var(--accent-soft); padding:3px 8px; border-radius:5px; letter-spacing:.02em; }
+.rc-type{ font-size:.7rem; color:var(--ink-faint); font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+.rc-title{ font-family:var(--font-display); font-size:1.15rem; font-weight:600; margin:0; line-height:1.3; }
+.rc-title mark{ background:var(--amber-soft); color:var(--ink); border-radius:3px; }
+.rc-desc{ font-size:.88rem; color:var(--ink-soft); margin:0; flex:1; }
+.rc-meta{ display:flex; flex-wrap:wrap; gap:6px 14px; font-size:.76rem; color:var(--ink-faint); }
+.rc-meta span{ display:inline-flex; align-items:center; gap:5px; }
+.rc-tags{ display:flex; flex-wrap:wrap; gap:6px; }
+.rc-tag{ font-family:var(--font-mono); font-size:.68rem; background:var(--paper); border:1px solid var(--line); color:var(--ink-soft); padding:3px 8px; border-radius:5px; }
+.rc-footer{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:6px; padding-top:12px; border-top:1px dashed var(--line); }
+.rc-rating{ display:flex; align-items:center; gap:5px; font-size:.82rem; font-weight:600; color:var(--amber); }
+.rc-actions{ display:flex; gap:6px; }
+.rc-actions .icon-btn{ width:34px; height:34px; font-size:.9rem; }
+.rc-actions .icon-btn.bookmarked{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.badge-diff{ font-size:.68rem; font-weight:700; padding:3px 8px; border-radius:20px; text-transform:uppercase; letter-spacing:.03em; }
+.badge-diff.Beginner{ background:var(--accent-soft); color:var(--accent-ink); }
+.badge-diff.Intermediate{ background:var(--amber-soft); color:var(--amber); }
+.badge-diff.Advanced{ background:var(--danger-soft); color:var(--danger); }
+
+.empty-state{ text-align:center; padding:70px 20px; color:var(--ink-faint); }
+.empty-state .es-icon{ font-size:2.6rem; margin-bottom:14px; color:var(--line-strong); }
+.empty-state h3{ color:var(--ink); margin-bottom:6px; }
+
+/* ---------- Layout: sidebar + content (resources page) ---------- */
+.browse-layout{ display:grid; grid-template-columns:260px 1fr; gap:32px; align-items:start; }
+@media (max-width:900px){ .browse-layout{ grid-template-columns:1fr; } }
+
+.filters-panel{
+  background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;
+  position:sticky; top:calc(var(--header-h) + 20px);
+}
+.filters-panel h3{ font-size:1rem; margin-bottom:14px; }
+.filter-group{ margin-bottom:20px; }
+.filter-group:last-child{ margin-bottom:0; }
+.filter-group .fg-label{ font-family:var(--font-mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); margin-bottom:8px; display:block; }
+.filter-option{ display:flex; align-items:center; gap:8px; padding:6px 0; font-size:.88rem; cursor:pointer; color:var(--ink-soft); }
+.filter-option input{ accent-color:var(--accent); width:16px; height:16px; }
+.filter-option:hover{ color:var(--ink); }
+.filter-count{ margin-left:auto; font-family:var(--font-mono); font-size:.72rem; color:var(--ink-faint); }
+.filters-panel select{
+  width:100%; padding:9px 10px; border-radius:8px; border:1px solid var(--line-strong); background:var(--paper);
+  color:var(--ink); font-family:var(--font-body); font-size:.88rem;
+}
+.results-bar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+.results-count{ font-size:.9rem; color:var(--ink-soft); }
+.sort-select{ padding:9px 12px; border-radius:8px; border:1px solid var(--line-strong); background:var(--paper-raised); color:var(--ink); font-size:.85rem; }
+
+/* ---------- Footer ---------- */
+.site-footer{ border-top:1px solid var(--line); margin-top:60px; padding:48px 0 28px; }
+.footer-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:32px; margin-bottom:36px; }
+.footer-grid h4{ font-size:.82rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-faint); font-family:var(--font-mono); margin-bottom:14px; }
+.footer-grid a{ display:block; padding:5px 0; font-size:.9rem; color:var(--ink-soft); transition:color var(--transition); }
+.footer-grid a:hover{ color:var(--accent); }
+.footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-top:24px; border-top:1px solid var(--line); font-size:.82rem; color:var(--ink-faint); flex-wrap:wrap; gap:10px; }
+@media (max-width:760px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
+
+/* ---------- Misc pages ---------- */
+.prose{ max-width:74ch; }
+.prose h2{ margin-top:1.6em; font-size:1.4rem; }
+.prose ul{ list-style:disc; padding-left:1.4em; margin-bottom:1em; }
+.prose li{ margin-bottom:.4em; color:var(--ink-soft); }
+.page-hero{ padding:52px 0 20px; }
+.page-hero h1{ font-size:clamp(1.9rem,4vw,2.8rem); }
+
+.faq-item{ border-bottom:1px solid var(--line); }
+.faq-q{
+  width:100%; text-align:left; background:none; border:none; padding:18px 4px; display:flex; justify-content:space-between;
+  align-items:center; gap:12px; font-family:var(--font-display); font-size:1.05rem; font-weight:600; color:var(--ink);
+}
+.faq-q i{ transition:transform var(--transition); color:var(--ink-faint); flex-shrink:0; }
+.faq-item.open .faq-q i{ transform:rotate(45deg); }
+.faq-a{ max-height:0; overflow:hidden; transition:max-height var(--transition); }
+.faq-item.open .faq-a{ max-height:400px; }
+.faq-a p{ padding:0 4px 18px; }
+
+.form-field{ margin-bottom:18px; }
+.form-field label{ display:block; font-size:.85rem; font-weight:600; margin-bottom:6px; }
+.form-field input, .form-field textarea, .form-field select{
+  width:100%; padding:12px 14px; border-radius:9px; border:1.5px solid var(--line-strong); background:var(--paper-raised);
+  color:var(--ink); font-family:var(--font-body); font-size:.94rem; transition:border-color var(--transition), box-shadow var(--transition);
+}
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus{ border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); outline:none; }
+.form-field textarea{ resize:vertical; min-height:120px; }
+.form-error{ color:var(--danger); font-size:.78rem; margin-top:5px; display:none; }
+.form-field.invalid input, .form-field.invalid textarea{ border-color:var(--danger); }
+.form-field.invalid .form-error{ display:block; }
+
+.card-block{ background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-lg); padding:32px; box-shadow:var(--shadow-sm); }
+
+.chart-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.chart-card{ background:var(--paper-raised); border:1px solid var(--line); border-radius:var(--radius-md); padding:22px; }
+.chart-card h3{ font-size:1rem; margin-bottom:14px; }
+.chart-card .chart-wrap{ position:relative; height:260px; }
+@media (max-width:860px){ .chart-grid{ grid-template-columns:1fr; } }
+
+.trend-list{ display:flex; flex-direction:column; gap:10px; }
+.trend-row{ display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--line); border-radius:9px; background:var(--paper-raised); }
+.trend-rank{ font-family:var(--font-mono); font-weight:700; color:var(--accent); width:24px; }
+.trend-name{ font-weight:600; flex:1; }
+.trend-bar-track{ width:120px; height:6px; background:var(--line); border-radius:4px; overflow:hidden; }
+.trend-bar-fill{ height:100%; background:var(--accent); border-radius:4px; }
+.trend-val{ font-family:var(--font-mono); font-size:.78rem; color:var(--ink-faint); width:60px; text-align:right; }
+
+.tab-row{ display:flex; gap:8px; border-bottom:1px solid var(--line); margin-bottom:24px; flex-wrap:wrap; }
+.tab-btn{ padding:10px 16px; border:none; background:none; font-weight:600; font-size:.9rem; color:var(--ink-faint); border-bottom:2px solid transparent; margin-bottom:-1px; }
+.tab-btn.active{ color:var(--accent); border-color:var(--accent); }
+.tab-panel{ display:none; }
+.tab-panel.active{ display:block; }
+
+.bookmark-toolbar{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
+
+/* ---------- Toast (fallback, Toastify used primarily) ---------- */
+.toast-fallback{ position:fixed; bottom:24px; right:24px; background:var(--ink); color:var(--paper); padding:14px 18px; border-radius:9px; z-index:999; }
+
+/* ---------- 404 ---------- */
+.error-page{ min-height:60vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:60px 20px; }
+.error-code{ font-family:var(--font-mono); font-size:5rem; color:var(--accent); font-weight:700; line-height:1; }
+
+/* ---------- Animations ---------- */
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+.fade-up{ animation:fadeUp .5s cubic-bezier(.4,0,.2,1) both; }
+.resource-card, .category-card{ animation:fadeUp .4s cubic-bezier(.4,0,.2,1) both; }
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar{ width:10px; height:10px; }
+::-webkit-scrollbar-track{ background:transparent; }
+::-webkit-scrollbar-thumb{ background:var(--line-strong); border-radius:20px; }
+
+/* ---------- Single-file SPA route visibility (JS toggles these after boot) ---------- */
+#route-resources, #route-categories, #route-trending, #route-bookmarks,
+#route-about, #route-faq, #route-privacy, #route-terms, #route-contact, #route-404 {
+  display: none;
+}
+
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="#home"><span class="brand-mark">RH</span> Resource Hub</a>
+    <nav class="main-nav" id="mainNav" aria-label="Primary">
+      <a href="#home" data-route="home">Home</a>
+      <a href="#resources" data-route="resources">Resources</a>
+      <a href="#categories" data-route="categories">Categories</a>
+      <a href="#trending" data-route="trending">Trending</a>
+      <a href="#bookmarks" data-route="bookmarks">Bookmarks</a>
+      <a href="#about" data-route="about">About</a>
+      <a href="#faq" data-route="faq">FAQ</a>
+      <a href="#contact" data-route="contact">Contact</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn theme-toggle" aria-label="Switch to dark mode"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+      <a class="icon-btn" href="#bookmarks" aria-label="View bookmarks" style="position:relative;">
+        <i class="fa-regular fa-bookmark" aria-hidden="true"></i>
+        <span class="bookmark-count" style="position:absolute;top:-6px;right:-6px;background:var(--amber);color:#fff;font-size:.65rem;min-width:16px;height:16px;border-radius:20px;display:none;align-items:center;justify-content:center;padding:0 4px;font-family:var(--font-mono);">0</span>
+      </a>
+      <button class="icon-btn nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============================= HOME ============================= -->
+<section id="route-home">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="fade-up">
+        <span class="eyebrow"><i class="fa-solid fa-book-open" aria-hidden="true"></i> 96 resources · 32 subjects · always free</span>
+        <h1>Every topic has a <em>catalog card</em> waiting for you.</h1>
+        <p class="hero-sub">Search any subject — from HTML to Kubernetes to Interview Prep — and get a hand-picked shelf of free tutorials, courses, docs and books. No logins. No paywalls. One single-page app, no server required.</p>
+        <div class="hero-search">
+          <form id="heroSearchForm" role="search" aria-label="Search learning resources">
+            <div class="search-box">
+              <div class="search-input-wrap" id="heroSearchWrap">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="heroSearchInput" placeholder="Try “Python”, “React”, “Cyber Security”…" aria-label="Search learning resources" aria-expanded="false" autocomplete="off">
+                <button type="button" class="icon-btn search-clear" id="heroSearchClear" aria-label="Clear search"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+                <button type="submit" class="btn btn-primary btn-sm">Search</button>
+              </div>
+              <div class="search-suggestions" id="heroSuggestions" role="listbox"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="card-catalog fade-up" aria-hidden="true">
+        <div class="drawer">
+          <div class="drawer-label"><span>DRAWER — WEB.100</span><span>Est. 2024</span></div>
+          <div class="index-card"><div><div class="name">HTML</div><div class="sub">3 resources</div></div><span class="code">WEB.100</span></div>
+          <div class="index-card"><div><div class="name">JavaScript</div><div class="sub">3 resources</div></div><span class="code">WEB.120</span></div>
+          <div class="index-card"><div><div class="name">React</div><div class="sub">3 resources</div></div><span class="code">WEB.130</span></div>
+          <div class="index-card"><div><div class="name">Machine Learning</div><div class="sub">3 resources</div></div><span class="code">AI.310</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="stat-strip" id="statStrip">
+        <div class="stat"><div class="stat-num" id="statResources">0</div><div class="stat-label">Resources</div></div>
+        <div class="stat"><div class="stat-num" id="statCategories">0</div><div class="stat-label">Categories</div></div>
+        <div class="stat"><div class="stat-num" id="statRating">0.0</div><div class="stat-label">Avg. rating</div></div>
+        <div class="stat"><div class="stat-num" id="statFree">100%</div><div class="stat-label">Free forever</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Browse by drawer</span>
+          <h2>Popular categories</h2>
+          <p>Every category has its own call-number range, just like a real card catalog.</p>
+        </div>
+        <a class="btn btn-secondary" href="#categories">View all categories <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      <div class="category-grid" id="homeCategoryGrid"></div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--paper-raised); border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">Fresh on the shelf</span>
+          <h2>Recently updated resources</h2>
+          <p>The newest additions and refreshes to the catalog.</p>
+        </div>
+        <a class="btn btn-secondary" href="#resources?sort=newest">Browse all <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      <div class="resource-grid" id="homeLatestGrid" role="list"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">What people are searching</span>
+          <h2>Trending this week</h2>
+          <p>Ranked by real searches and views from this browser.</p>
+        </div>
+        <a class="btn btn-secondary" href="#trending">See full trends <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      <div class="trend-list" id="homeTrendList"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= RESOURCES ============================= -->
+<section id="route-resources">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><i class="fa-solid fa-layer-group" aria-hidden="true"></i> The full catalog</span>
+      <h1>Browse resources</h1>
+      <p class="hero-sub">Search, filter, and sort every resource in the catalog.</p>
+      <div class="search-box" style="max-width:640px; margin-top:18px;">
+        <div class="search-input-wrap" id="resSearchWrap">
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input type="search" id="resSearchInput" placeholder="Search title, tag, or category…" aria-label="Search learning resources" aria-expanded="false" autocomplete="off">
+          <button type="button" class="icon-btn search-clear" id="resSearchClear" aria-label="Clear search"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+        </div>
+        <div class="search-suggestions" id="resSuggestions" role="listbox"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight">
+    <div class="container">
+      <div class="browse-layout">
+        <aside class="filters-panel" aria-label="Filters">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h3 style="margin:0;">Filters</h3>
+            <button class="btn btn-ghost btn-sm" id="clearFiltersBtn"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Clear</button>
+          </div>
+          <div class="filter-group">
+            <span class="fg-label">Category</span>
+            <div id="categoryFilters" style="max-height:220px; overflow-y:auto; padding-right:4px;"></div>
+          </div>
+          <div class="filter-group">
+            <span class="fg-label">Difficulty</span>
+            <div id="difficultyFilters"></div>
+          </div>
+          <div class="filter-group">
+            <span class="fg-label">Resource Type</span>
+            <div id="typeFilters" style="max-height:180px; overflow-y:auto; padding-right:4px;"></div>
+          </div>
+          <div class="filter-group">
+            <span class="fg-label">Language</span>
+            <div id="languageFilters"></div>
+          </div>
+          <div class="filter-group">
+            <span class="fg-label">Minimum Rating</span>
+            <select id="ratingFilter">
+              <option value="0">Any rating</option>
+              <option value="4.5">4.5 and up</option>
+              <option value="4">4.0 and up</option>
+              <option value="3.5">3.5 and up</option>
+            </select>
+          </div>
+        </aside>
+        <div>
+          <div class="results-bar">
+            <span class="results-count" id="resultsCount" role="status" aria-live="polite"></span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <label for="sortSelect" class="visually-hidden">Sort resources</label>
+              <select id="sortSelect" class="sort-select">
+                <option value="relevance">Best match</option>
+                <option value="newest">Newest</option>
+                <option value="updated">Recently updated</option>
+                <option value="rating">Highest rated</option>
+                <option value="popular">Most popular</option>
+                <option value="az">Alphabetical A–Z</option>
+                <option value="za">Alphabetical Z–A</option>
+              </select>
+            </div>
+          </div>
+          <div class="resource-grid" id="resourceGrid" role="list" aria-live="polite"></div>
+          <div style="text-align:center; margin-top:32px;">
+            <button class="btn btn-secondary" id="loadMoreBtn">Load more resources</button>
+          </div>
+          <div id="scrollSentinel" style="height:1px;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= CATEGORIES ============================= -->
+<section id="route-categories">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><i class="fa-solid fa-folder-tree" aria-hidden="true"></i> 32 drawers</span>
+      <h1>Every drawer in the catalog</h1>
+      <p class="hero-sub">Each subject gets its own call-number range. Pick a drawer to see what's inside.</p>
+      <div class="search-input-wrap" style="max-width:420px; margin-top:18px;">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+        <input type="search" id="catFilterInput" placeholder="Filter categories…" aria-label="Filter categories" autocomplete="off">
+      </div>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="container">
+      <div class="category-grid" id="allCategoryGrid" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr));"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= TRENDING ============================= -->
+<section id="route-trending">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Live from this browser</span>
+      <h1>Trending &amp; statistics</h1>
+      <p class="hero-sub">Charts and rankings update automatically as you browse, search, and bookmark.</p>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="container">
+      <div class="chart-grid">
+        <div class="chart-card">
+          <h3>Resources by category</h3>
+          <div class="chart-wrap"><canvas id="chartCategories" role="img" aria-label="Bar chart of resource counts per category"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>Your bookmarks by category</h3>
+          <div class="chart-wrap"><canvas id="chartBookmarks" role="img" aria-label="Doughnut chart of bookmarked resources per category"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>Most viewed resources</h3>
+          <div class="chart-wrap"><canvas id="chartTrending" role="img" aria-label="Bar chart of most viewed resources"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3>Search activity</h3>
+          <div class="chart-wrap"><canvas id="chartSearch" role="img" aria-label="Bar chart of most searched terms"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="tab-row" role="tablist">
+        <button class="tab-btn active" data-tab="viewed" role="tab" aria-selected="true">Most Viewed</button>
+        <button class="tab-btn" data-tab="bookmarked" role="tab" aria-selected="false">Most Bookmarked</button>
+        <button class="tab-btn" data-tab="newest" role="tab" aria-selected="false">Recently Added</button>
+        <button class="tab-btn" data-tab="categories" role="tab" aria-selected="false">Popular Categories</button>
+        <button class="tab-btn" data-tab="searches" role="tab" aria-selected="false">Trending Topics</button>
+      </div>
+      <div class="tab-panel active" id="tab-viewed"><div class="trend-list" id="listViewed"></div></div>
+      <div class="tab-panel" id="tab-bookmarked"><div class="trend-list" id="listBookmarked"></div></div>
+      <div class="tab-panel" id="tab-newest"><div class="resource-grid" id="listNewest" role="list"></div></div>
+      <div class="tab-panel" id="tab-categories"><div class="trend-list" id="listCategories"></div></div>
+      <div class="tab-panel" id="tab-searches"><div class="trend-list" id="listSearches"></div></div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= BOOKMARKS ============================= -->
+<section id="route-bookmarks">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><i class="fa-solid fa-bookmark" aria-hidden="true"></i> Saved to this browser</span>
+      <h1>Your bookmarks</h1>
+      <p class="hero-sub">Saved resources persist on this device using local storage — nothing is sent to a server.</p>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="container">
+      <div class="bookmark-toolbar">
+        <button class="btn btn-secondary btn-sm" id="exportBtn"><i class="fa-solid fa-file-export" aria-hidden="true"></i> Export</button>
+        <label class="btn btn-secondary btn-sm" for="importInput" style="margin:0;"><i class="fa-solid fa-file-import" aria-hidden="true"></i> Import</label>
+        <input type="file" id="importInput" accept="application/json" class="visually-hidden">
+        <button class="btn btn-ghost btn-sm" id="clearBookmarksBtn" style="color:var(--danger);"><i class="fa-solid fa-trash" aria-hidden="true"></i> Clear all</button>
+        <span class="results-count" id="bookmarkCountLabel" style="margin-left:auto;"></span>
+      </div>
+      <div class="resource-grid" id="bookmarkGrid" role="list"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= ABOUT ============================= -->
+<section id="route-about">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><i class="fa-solid fa-book" aria-hidden="true"></i> Our mission</span>
+      <h1>A card catalog for the whole internet's free knowledge</h1>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="container">
+      <div class="card-block prose">
+        <p>Resource Hub started from a simple frustration: the best free tutorials, docs, and courses for any given subject are scattered across a hundred different corners of the web. Finding them usually means ten browser tabs, a dozen search queries, and a lot of second-guessing about which link is actually worth your time.</p>
+        <p>So we built a catalog. Like the library card catalogs of old, every resource here gets a call number, a category, and a short, honest description — so you can scan a shelf instead of scrolling an algorithmic feed.</p>
+        <h2>What makes the catalog different</h2>
+        <ul>
+          <li><strong>Frontend-only, by design.</strong> There's no server, no account, and nothing to sign up for. Everything runs in your browser, in this single HTML file.</li>
+          <li><strong>Your data stays with you.</strong> Bookmarks, search history, and view counts live in your browser's local storage — never on our servers, because we don't have any.</li>
+          <li><strong>Curated, not crawled.</strong> Every entry is hand-picked for being genuinely free and genuinely useful, not the highest bidder.</li>
+          <li><strong>Built for scanning.</strong> Call numbers, tags, and difficulty badges let you judge a resource before you click through.</li>
+        </ul>
+        <h2>How the catalog is organized</h2>
+        <p>Each subject — HTML, Python, Machine Learning, Civil Engineering, and 28 others — lives in its own "drawer" with a dedicated call-number range, visible right on every resource card. Browse by <a href="#categories" style="color:var(--accent); font-weight:600;">category</a>, search by keyword, or just see what's <a href="#trending" style="color:var(--accent); font-weight:600;">trending</a> right now.</p>
+        <h2>Something missing?</h2>
+        <p>If there's a resource, category, or feature you'd love to see, we'd genuinely like to hear about it — visit the <a href="#contact" style="color:var(--accent); font-weight:600;">contact page</a> and send a note.</p>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= FAQ ============================= -->
+<section id="route-faq">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> Help</span>
+      <h1>Frequently asked questions</h1>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="container">
+      <div class="card-block" style="max-width:820px;">
+        <div id="faqList"></div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= PRIVACY ============================= -->
+<section id="route-privacy">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Last updated July 1, 2026</span>
+      <h1>Privacy Policy</h1>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="container">
+      <div class="card-block prose">
+        <p>Resource Hub is a frontend-only application — this entire site is one HTML file. There is no backend server, no database, and no account system, which means there is very little of your data for us to collect in the first place.</p>
+        <h2>What stays on your device</h2>
+        <ul>
+          <li><strong>Bookmarks</strong> — the list of resources you've saved.</li>
+          <li><strong>Search history</strong> — your most recent search terms (capped at 20).</li>
+          <li><strong>View &amp; search counters</strong> — used to power the Trending page for you.</li>
+          <li><strong>Theme preference</strong> — whether you last chose light or dark mode.</li>
+        </ul>
+        <p>All of the above is stored using your browser's local storage, scoped to this file. It never leaves your device, is never transmitted to any server, and is fully under your control — clear it at any time from the Bookmarks page or your browser settings.</p>
+        <h2>What we don't do</h2>
+        <ul>
+          <li>We don't use cookies for tracking.</li>
+          <li>We don't run analytics scripts that identify you personally.</li>
+          <li>We don't require sign-up, login, or an email address to use any feature.</li>
+          <li>We don't sell or share data, because we don't collect any to begin with.</li>
+        </ul>
+        <h2>Third-party links</h2>
+        <p>Resource cards link out to third-party websites. Once you leave Resource Hub, that site's own privacy policy applies.</p>
+        <h2>Content delivery networks</h2>
+        <p>This page loads fonts, icons, and JavaScript libraries from public CDNs so it looks and works well. These providers may log basic request data like your IP address as part of standard web infrastructure, independent of anything Resource Hub itself does.</p>
+        <h2>Questions?</h2>
+        <p>Reach out via the <a href="#contact" style="color:var(--accent); font-weight:600;">Contact page</a>.</p>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= TERMS ============================= -->
+<section id="route-terms">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><i class="fa-solid fa-scale-balanced" aria-hidden="true"></i> Last updated July 1, 2026</span>
+      <h1>Terms of Use</h1>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="container">
+      <div class="card-block prose">
+        <p>By using Resource Hub, you agree to the following terms. If you don't agree, please don't use the site.</p>
+        <h2>What this site is</h2>
+        <p>Resource Hub is a free, single-file, frontend-only directory that links out to third-party learning resources. We don't host the tutorials, courses, or documentation themselves — we index and describe them, and link you to the original source.</p>
+        <h2>Use of the catalog</h2>
+        <ul>
+          <li>You may browse, search, filter, and bookmark resources for personal or professional learning at no cost.</li>
+          <li>You may not scrape, mirror, or redistribute the catalog's contents at scale without permission.</li>
+          <li>You may not use the site to distribute malware, spam, or unlawful content through the Contact form.</li>
+        </ul>
+        <h2>Third-party content</h2>
+        <p>Resource Hub does not control, and is not responsible for, the content, availability, or accuracy of external websites linked from resource cards.</p>
+        <h2>No warranty</h2>
+        <p>The catalog is provided "as is," without warranty of any kind. If you spot a broken link, please let us know via the Contact page.</p>
+        <h2>Local data</h2>
+        <p>Bookmarks, search history, and statistics are stored in your browser's local storage. We are not responsible for data loss due to clearing your browser cache — use the Export feature on the Bookmarks page to keep a backup.</p>
+        <h2>Contact</h2>
+        <p>Questions about these terms can be sent through the <a href="#contact" style="color:var(--accent); font-weight:600;">Contact page</a>.</p>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= CONTACT ============================= -->
+<section id="route-contact">
+  <section class="page-hero">
+    <div class="container">
+      <span class="eyebrow"><i class="fa-solid fa-envelope" aria-hidden="true"></i> Say hello</span>
+      <h1>Get in touch</h1>
+      <p class="hero-sub">Suggest a resource, report a broken link, or just say hi. This form validates in your browser only — there's no backend, so nothing is actually sent anywhere.</p>
+    </div>
+  </section>
+  <section class="section-tight">
+    <div class="container">
+      <div class="card-block" style="max-width:640px;">
+        <form id="contactForm" novalidate>
+          <div class="form-field" id="field-name">
+            <label for="nameInput">Full name</label>
+            <input type="text" id="nameInput" name="name" placeholder="Ada Lovelace" autocomplete="name">
+            <div class="form-error">Please enter your name (at least 2 characters).</div>
+          </div>
+          <div class="form-field" id="field-email">
+            <label for="emailInput">Email address</label>
+            <input type="email" id="emailInput" name="email" placeholder="ada@example.com" autocomplete="email">
+            <div class="form-error">Please enter a valid email address.</div>
+          </div>
+          <div class="form-field" id="field-subject">
+            <label for="subjectInput">Subject</label>
+            <select id="subjectInput" name="subject">
+              <option value="">Choose a topic…</option>
+              <option value="suggest">Suggest a resource</option>
+              <option value="broken">Report a broken link</option>
+              <option value="bug">Report a bug</option>
+              <option value="feedback">General feedback</option>
+              <option value="other">Something else</option>
+            </select>
+            <div class="form-error">Please choose a subject.</div>
+          </div>
+          <div class="form-field" id="field-message">
+            <label for="messageInput">Message</label>
+            <textarea id="messageInput" name="message" placeholder="Tell us what's on your mind…"></textarea>
+            <div class="form-error">Please write a message (at least 10 characters).</div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Send message <i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
+        </form>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============================= 404 ============================= -->
+<section id="route-404">
+  <section class="error-page">
+    <div class="error-code mono">404</div>
+    <h1 style="margin-top:10px;">This card isn't in the catalog</h1>
+    <p style="max-width:46ch;">The page you're looking for may have been moved, renamed, or never existed. Let's get you back to the shelves.</p>
+    <div style="display:flex; gap:12px; margin-top:18px; flex-wrap:wrap; justify-content:center;">
+      <a class="btn btn-primary" href="#home"><i class="fa-solid fa-house" aria-hidden="true"></i> Back to home</a>
+      <a class="btn btn-secondary" href="#resources"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Browse resources</a>
+    </div>
+  </section>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="#home" style="margin-bottom:12px;"><span class="brand-mark">RH</span> Resource Hub</a>
+        <p style="max-width:32ch;">A free, single-file card catalog of the web's best learning resources — no logins, no paywalls, no server.</p>
+      </div>
+      <div><h4>Explore</h4>
+        <a href="#resources">All Resources</a>
+        <a href="#categories">Categories</a>
+        <a href="#trending">Trending</a>
+        <a href="#bookmarks">Bookmarks</a>
+      </div>
+      <div><h4>Company</h4>
+        <a href="#about">About</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div><h4>Legal</h4>
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#terms">Terms of Use</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span class="footer-year">2026</span> Resource Hub. Built for learners, everywhere.</span>
+      <span>Frontend-only · One file · No tracking · No logins</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+/* Auto-generated resource dataset. Loaded as a script (not fetch) so the app works when opened directly via file:// as well as when hosted. */
+window.RESOURCE_DATA = {
+  "resources": [
+    {
+      "id": "res-001",
+      "title": "MDN Web Docs: HTML",
+      "description": "The definitive reference for every HTML element and attribute, maintained by browser vendors and the web community.",
+      "category": "HTML",
+      "categoryKey": "html",
+      "callNumber": "WEB.100.1",
+      "tags": [
+        "reference",
+        "elements",
+        "semantics"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.9,
+      "author": "MDN Contributors",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML",
+      "lastUpdated": "2026-05-10",
+      "estimatedTime": "Ongoing",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-002",
+      "title": "freeCodeCamp: Responsive Web Design",
+      "description": "A full self-paced curriculum that teaches HTML and CSS fundamentals through hands-on projects.",
+      "category": "HTML",
+      "categoryKey": "html",
+      "callNumber": "WEB.100.2",
+      "tags": [
+        "course",
+        "projects",
+        "responsive"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org/learn/2022/responsive-web-design/",
+      "lastUpdated": "2026-03-01",
+      "estimatedTime": "40 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-003",
+      "title": "W3Schools HTML Tutorial",
+      "description": "A bite-sized, example-driven tutorial covering HTML tags, forms, and semantic markup with a live editor.",
+      "category": "HTML",
+      "categoryKey": "html",
+      "callNumber": "WEB.100.3",
+      "tags": [
+        "tutorial",
+        "examples",
+        "forms"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "W3Schools",
+      "url": "https://www.w3schools.com/html/",
+      "lastUpdated": "2026-01-15",
+      "estimatedTime": "10 hours",
+      "type": "Tutorial"
+    },
+    {
+      "id": "res-004",
+      "title": "MDN Web Docs: CSS",
+      "description": "Comprehensive documentation of CSS properties, selectors, and layout systems like Flexbox and Grid.",
+      "category": "CSS",
+      "categoryKey": "css",
+      "callNumber": "WEB.110.1",
+      "tags": [
+        "reference",
+        "flexbox",
+        "grid"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.9,
+      "author": "MDN Contributors",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS",
+      "lastUpdated": "2026-05-10",
+      "estimatedTime": "Ongoing",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-005",
+      "title": "CSS-Tricks: A Complete Guide to Flexbox",
+      "description": "A visual, thorough guide that breaks down every Flexbox property with diagrams and examples.",
+      "category": "CSS",
+      "categoryKey": "css",
+      "callNumber": "WEB.110.2",
+      "tags": [
+        "flexbox",
+        "layout",
+        "guide"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Chris Coyier",
+      "url": "https://css-tricks.com/snippets/css/a-guide-to-flexbox/",
+      "lastUpdated": "2025-11-20",
+      "estimatedTime": "2 hours",
+      "type": "Article"
+    },
+    {
+      "id": "res-006",
+      "title": "Flexbox Froggy",
+      "description": "A playful game that teaches Flexbox by guiding frogs onto lily pads using real CSS properties.",
+      "category": "CSS",
+      "categoryKey": "css",
+      "callNumber": "WEB.110.3",
+      "tags": [
+        "game",
+        "flexbox",
+        "interactive"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.7,
+      "author": "Codepip",
+      "url": "https://flexboxfroggy.com/",
+      "lastUpdated": "2025-06-01",
+      "estimatedTime": "1 hour",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-007",
+      "title": "MDN Web Docs: JavaScript Guide",
+      "description": "An in-depth guide covering syntax, types, closures, async programming, and the DOM API.",
+      "category": "JavaScript",
+      "categoryKey": "javascript",
+      "callNumber": "WEB.120.1",
+      "tags": [
+        "reference",
+        "async",
+        "dom"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.9,
+      "author": "MDN Contributors",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide",
+      "lastUpdated": "2026-05-10",
+      "estimatedTime": "Ongoing",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-008",
+      "title": "javascript.info",
+      "description": "A modern, deeply detailed tutorial covering the language from fundamentals to advanced browser APIs.",
+      "category": "JavaScript",
+      "categoryKey": "javascript",
+      "callNumber": "WEB.120.2",
+      "tags": [
+        "tutorial",
+        "modern",
+        "es6"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.9,
+      "author": "Ilya Kantor",
+      "url": "https://javascript.info/",
+      "lastUpdated": "2026-02-14",
+      "estimatedTime": "60 hours",
+      "type": "Tutorial"
+    },
+    {
+      "id": "res-009",
+      "title": "Eloquent JavaScript",
+      "description": "A free online book teaching programming fundamentals and JavaScript through interactive examples.",
+      "category": "JavaScript",
+      "categoryKey": "javascript",
+      "callNumber": "WEB.120.3",
+      "tags": [
+        "book",
+        "fundamentals",
+        "exercises"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.7,
+      "author": "Marijn Haverbeke",
+      "url": "https://eloquentjavascript.net/",
+      "lastUpdated": "2025-09-05",
+      "estimatedTime": "30 hours",
+      "type": "Book"
+    },
+    {
+      "id": "res-010",
+      "title": "Official Python Tutorial",
+      "description": "The official beginner-to-intermediate walkthrough of Python syntax, data structures, and modules.",
+      "category": "Python",
+      "categoryKey": "python",
+      "callNumber": "LANG.200.1",
+      "tags": [
+        "reference",
+        "syntax",
+        "official"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Python Software Foundation",
+      "url": "https://docs.python.org/3/tutorial/",
+      "lastUpdated": "2026-04-01",
+      "estimatedTime": "20 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-011",
+      "title": "CS50's Introduction to Programming with Python",
+      "description": "Harvard's rigorous, project-based introduction to Python programming, free through edX.",
+      "category": "Python",
+      "categoryKey": "python",
+      "callNumber": "LANG.200.2",
+      "tags": [
+        "course",
+        "harvard",
+        "projects"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.9,
+      "author": "Harvard University",
+      "url": "https://cs50.harvard.edu/python/",
+      "lastUpdated": "2026-01-10",
+      "estimatedTime": "50 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-012",
+      "title": "Automate the Boring Stuff with Python",
+      "description": "A practical free book teaching Python through real automation projects like file handling and web scraping.",
+      "category": "Python",
+      "categoryKey": "python",
+      "callNumber": "LANG.200.3",
+      "tags": [
+        "book",
+        "automation",
+        "practical"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Al Sweigart",
+      "url": "https://automatetheboringstuff.com/",
+      "lastUpdated": "2025-08-12",
+      "estimatedTime": "25 hours",
+      "type": "Book"
+    },
+    {
+      "id": "res-013",
+      "title": "Oracle Java Tutorials",
+      "description": "The official trail of tutorials covering Java syntax, OOP concepts, and the standard library.",
+      "category": "Java",
+      "categoryKey": "java",
+      "callNumber": "LANG.210.1",
+      "tags": [
+        "reference",
+        "oop",
+        "official"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Oracle",
+      "url": "https://docs.oracle.com/javase/tutorial/",
+      "lastUpdated": "2025-12-01",
+      "estimatedTime": "30 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-014",
+      "title": "freeCodeCamp: Java Programming for Beginners",
+      "description": "A full video course covering Java basics, OOP, and data structures with hands-on coding.",
+      "category": "Java",
+      "categoryKey": "java",
+      "callNumber": "LANG.210.2",
+      "tags": [
+        "video",
+        "oop",
+        "data-structures"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.7,
+      "author": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org/news/java-programming-for-beginners/",
+      "lastUpdated": "2025-10-18",
+      "estimatedTime": "12 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-015",
+      "title": "Baeldung",
+      "description": "A large library of practical Java and Spring tutorials written by working engineers.",
+      "category": "Java",
+      "categoryKey": "java",
+      "callNumber": "LANG.210.3",
+      "tags": [
+        "tutorials",
+        "spring",
+        "practical"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.7,
+      "author": "Baeldung Team",
+      "url": "https://www.baeldung.com/",
+      "lastUpdated": "2026-05-01",
+      "estimatedTime": "Ongoing",
+      "type": "Tutorial"
+    },
+    {
+      "id": "res-016",
+      "title": "Learn-C.org",
+      "description": "An interactive, in-browser tutorial that teaches C fundamentals with live code exercises.",
+      "category": "C",
+      "categoryKey": "c",
+      "callNumber": "LANG.220.1",
+      "tags": [
+        "interactive",
+        "fundamentals",
+        "exercises"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "SoloLearn",
+      "url": "https://www.learn-c.org/",
+      "lastUpdated": "2025-07-22",
+      "estimatedTime": "8 hours",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-017",
+      "title": "GeeksforGeeks: C Programming Language",
+      "description": "A comprehensive reference covering C syntax, pointers, memory management, and practice problems.",
+      "category": "C",
+      "categoryKey": "c",
+      "callNumber": "LANG.220.2",
+      "tags": [
+        "reference",
+        "pointers",
+        "practice"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org/c-programming-language/",
+      "lastUpdated": "2026-03-19",
+      "estimatedTime": "20 hours",
+      "type": "Article"
+    },
+    {
+      "id": "res-018",
+      "title": "The C Programming Language (K&R) Companion Notes",
+      "description": "Community-maintained study notes and exercise solutions accompanying the classic C textbook.",
+      "category": "C",
+      "categoryKey": "c",
+      "callNumber": "LANG.220.3",
+      "tags": [
+        "book",
+        "classic",
+        "exercises"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Community",
+      "url": "https://en.wikibooks.org/wiki/C_Programming",
+      "lastUpdated": "2025-05-30",
+      "estimatedTime": "25 hours",
+      "type": "Book"
+    },
+    {
+      "id": "res-019",
+      "title": "cplusplus.com Tutorial",
+      "description": "A long-standing free tutorial and reference for core C++ language features and the standard library.",
+      "category": "C++",
+      "categoryKey": "cpp",
+      "callNumber": "LANG.230.1",
+      "tags": [
+        "reference",
+        "stl",
+        "syntax"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.4,
+      "author": "cplusplus.com",
+      "url": "https://cplusplus.com/doc/tutorial/",
+      "lastUpdated": "2025-04-11",
+      "estimatedTime": "20 hours",
+      "type": "Tutorial"
+    },
+    {
+      "id": "res-020",
+      "title": "LearnCpp.com",
+      "description": "An exceptionally thorough, free step-by-step course covering modern C++ from basics to advanced topics.",
+      "category": "C++",
+      "categoryKey": "cpp",
+      "callNumber": "LANG.230.2",
+      "tags": [
+        "course",
+        "modern-cpp",
+        "advanced"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.9,
+      "author": "Alex & Team",
+      "url": "https://www.learncpp.com/",
+      "lastUpdated": "2026-02-02",
+      "estimatedTime": "60 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-021",
+      "title": "CppReference",
+      "description": "The most complete technical reference for the C++ standard library and language specification.",
+      "category": "C++",
+      "categoryKey": "cpp",
+      "callNumber": "LANG.230.3",
+      "tags": [
+        "reference",
+        "standard-library",
+        "technical"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.8,
+      "author": "cppreference.com",
+      "url": "https://en.cppreference.com/w/",
+      "lastUpdated": "2026-05-15",
+      "estimatedTime": "Ongoing",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-022",
+      "title": "React Official Docs",
+      "description": "The official, rewritten documentation teaching React through interactive examples and modern hooks.",
+      "category": "React",
+      "categoryKey": "react",
+      "callNumber": "WEB.130.1",
+      "tags": [
+        "hooks",
+        "official",
+        "interactive"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.9,
+      "author": "Meta / React Team",
+      "url": "https://react.dev/learn",
+      "lastUpdated": "2026-04-20",
+      "estimatedTime": "25 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-023",
+      "title": "freeCodeCamp: Front End Development Libraries",
+      "description": "A project-based curriculum that includes a dedicated React section with real build projects.",
+      "category": "React",
+      "categoryKey": "react",
+      "callNumber": "WEB.130.2",
+      "tags": [
+        "projects",
+        "curriculum",
+        "hooks"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.7,
+      "author": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org/learn/front-end-development-libraries/",
+      "lastUpdated": "2026-01-05",
+      "estimatedTime": "35 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-024",
+      "title": "Epic React Free Articles",
+      "description": "A collection of free in-depth articles on React patterns, performance, and testing by Kent C. Dodds.",
+      "category": "React",
+      "categoryKey": "react",
+      "callNumber": "WEB.130.3",
+      "tags": [
+        "patterns",
+        "performance",
+        "testing"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Kent C. Dodds",
+      "url": "https://kentcdodds.com/blog",
+      "lastUpdated": "2025-11-11",
+      "estimatedTime": "10 hours",
+      "type": "Article"
+    },
+    {
+      "id": "res-025",
+      "title": "Node.js Official Guides",
+      "description": "The official documentation and guides covering the event loop, modules, and core APIs.",
+      "category": "Node.js",
+      "categoryKey": "nodejs",
+      "callNumber": "WEB.140.1",
+      "tags": [
+        "reference",
+        "event-loop",
+        "official"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.7,
+      "author": "OpenJS Foundation",
+      "url": "https://nodejs.org/en/docs/guides",
+      "lastUpdated": "2026-03-28",
+      "estimatedTime": "15 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-026",
+      "title": "The Odin Project: NodeJS Path",
+      "description": "A free, project-driven full-stack curriculum with a dedicated Node.js and Express track.",
+      "category": "Node.js",
+      "categoryKey": "nodejs",
+      "callNumber": "WEB.140.2",
+      "tags": [
+        "curriculum",
+        "express",
+        "projects"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.8,
+      "author": "The Odin Project",
+      "url": "https://www.theodinproject.com/paths/full-stack-javascript",
+      "lastUpdated": "2026-02-19",
+      "estimatedTime": "80 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-027",
+      "title": "freeCodeCamp: Back End Development and APIs",
+      "description": "Teaches Node.js and Express by building and deploying real REST APIs.",
+      "category": "Node.js",
+      "categoryKey": "nodejs",
+      "callNumber": "WEB.140.3",
+      "tags": [
+        "api",
+        "express",
+        "backend"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.6,
+      "author": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org/learn/back-end-development-and-apis/",
+      "lastUpdated": "2025-12-22",
+      "estimatedTime": "30 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-028",
+      "title": "Angular Official Docs",
+      "description": "The official tutorial and reference covering components, services, and Angular's reactive forms.",
+      "category": "Angular",
+      "categoryKey": "angular",
+      "callNumber": "WEB.150.1",
+      "tags": [
+        "reference",
+        "components",
+        "official"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Angular Team",
+      "url": "https://angular.dev/overview",
+      "lastUpdated": "2026-04-02",
+      "estimatedTime": "20 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-029",
+      "title": "Tour of Heroes Tutorial",
+      "description": "The official hands-on tutorial that builds a full Angular application step by step.",
+      "category": "Angular",
+      "categoryKey": "angular",
+      "callNumber": "WEB.150.2",
+      "tags": [
+        "tutorial",
+        "hands-on",
+        "routing"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "Angular Team",
+      "url": "https://angular.dev/tutorials/first-app",
+      "lastUpdated": "2026-01-30",
+      "estimatedTime": "8 hours",
+      "type": "Tutorial"
+    },
+    {
+      "id": "res-030",
+      "title": "Angular University Free Articles",
+      "description": "Free deep-dive articles on Angular architecture, RxJS, and state management.",
+      "category": "Angular",
+      "categoryKey": "angular",
+      "callNumber": "WEB.150.3",
+      "tags": [
+        "rxjs",
+        "architecture",
+        "state"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Angular University",
+      "url": "https://blog.angular-university.io/",
+      "lastUpdated": "2025-09-14",
+      "estimatedTime": "10 hours",
+      "type": "Article"
+    },
+    {
+      "id": "res-031",
+      "title": "Vue.js Official Guide",
+      "description": "The official, example-rich guide covering the composition API, reactivity, and component design.",
+      "category": "Vue",
+      "categoryKey": "vue",
+      "callNumber": "WEB.160.1",
+      "tags": [
+        "reference",
+        "composition-api",
+        "official"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Vue Core Team",
+      "url": "https://vuejs.org/guide/introduction.html",
+      "lastUpdated": "2026-03-11",
+      "estimatedTime": "18 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-032",
+      "title": "Vue School Free Courses",
+      "description": "A selection of free introductory video courses on Vue 3 fundamentals and the Composition API.",
+      "category": "Vue",
+      "categoryKey": "vue",
+      "callNumber": "WEB.160.2",
+      "tags": [
+        "video",
+        "fundamentals",
+        "free"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Vue School",
+      "url": "https://vueschool.io/courses",
+      "lastUpdated": "2025-10-07",
+      "estimatedTime": "6 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-033",
+      "title": "Vue Mastery Free Content",
+      "description": "Free lessons covering reactivity fundamentals and building your first Vue application.",
+      "category": "Vue",
+      "categoryKey": "vue",
+      "callNumber": "WEB.160.3",
+      "tags": [
+        "lessons",
+        "reactivity",
+        "beginner"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "Vue Mastery",
+      "url": "https://www.vuemastery.com/courses/",
+      "lastUpdated": "2025-08-25",
+      "estimatedTime": "5 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-034",
+      "title": "Elements of AI",
+      "description": "A free, friendly introduction to artificial intelligence concepts co-created by the University of Helsinki.",
+      "category": "AI",
+      "categoryKey": "ai",
+      "callNumber": "AI.300.1",
+      "tags": [
+        "fundamentals",
+        "ethics",
+        "free-course"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "University of Helsinki",
+      "url": "https://www.elementsofai.com/",
+      "lastUpdated": "2025-11-01",
+      "estimatedTime": "15 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-035",
+      "title": "Google AI Essentials",
+      "description": "A free short course from Google introducing generative AI concepts and practical use cases.",
+      "category": "AI",
+      "categoryKey": "ai",
+      "callNumber": "AI.300.2",
+      "tags": [
+        "generative-ai",
+        "google",
+        "short-course"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "Google",
+      "url": "https://grow.google/ai-essentials/",
+      "lastUpdated": "2026-02-10",
+      "estimatedTime": "6 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-036",
+      "title": "Stanford CS221: Artificial Intelligence Lecture Notes",
+      "description": "Free lecture notes and materials from Stanford's foundational AI course.",
+      "category": "AI",
+      "categoryKey": "ai",
+      "callNumber": "AI.300.3",
+      "tags": [
+        "lecture-notes",
+        "stanford",
+        "search"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.7,
+      "author": "Stanford University",
+      "url": "https://stanford-cs221.github.io/",
+      "lastUpdated": "2025-06-18",
+      "estimatedTime": "40 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-037",
+      "title": "Google Machine Learning Crash Course",
+      "description": "A fast-paced, free course with video lectures, interactive visualizations, and real-world case studies.",
+      "category": "Machine Learning",
+      "categoryKey": "ml",
+      "callNumber": "AI.310.1",
+      "tags": [
+        "tensorflow",
+        "crash-course",
+        "google"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Google",
+      "url": "https://developers.google.com/machine-learning/crash-course",
+      "lastUpdated": "2026-01-25",
+      "estimatedTime": "15 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-038",
+      "title": "Andrew Ng's Machine Learning (Coursera audit)",
+      "description": "The classic machine learning course covering regression, classification, and neural networks, free to audit.",
+      "category": "Machine Learning",
+      "categoryKey": "ml",
+      "callNumber": "AI.310.2",
+      "tags": [
+        "coursera",
+        "fundamentals",
+        "classic"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.9,
+      "author": "Andrew Ng / Stanford",
+      "url": "https://www.coursera.org/learn/machine-learning",
+      "lastUpdated": "2025-12-05",
+      "estimatedTime": "60 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-039",
+      "title": "Scikit-learn User Guide",
+      "description": "The official documentation teaching machine learning workflows using the scikit-learn library.",
+      "category": "Machine Learning",
+      "categoryKey": "ml",
+      "callNumber": "AI.310.3",
+      "tags": [
+        "reference",
+        "python",
+        "official"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.7,
+      "author": "scikit-learn developers",
+      "url": "https://scikit-learn.org/stable/user_guide.html",
+      "lastUpdated": "2026-04-08",
+      "estimatedTime": "Ongoing",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-040",
+      "title": "Kaggle Learn",
+      "description": "Short, free, hands-on micro-courses covering pandas, data visualization, and machine learning basics.",
+      "category": "Data Science",
+      "categoryKey": "datascience",
+      "callNumber": "AI.320.1",
+      "tags": [
+        "pandas",
+        "hands-on",
+        "micro-course"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Kaggle",
+      "url": "https://www.kaggle.com/learn",
+      "lastUpdated": "2026-03-15",
+      "estimatedTime": "20 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-041",
+      "title": "freeCodeCamp: Data Analysis with Python",
+      "description": "A certification curriculum teaching NumPy, pandas, and data visualization through real projects.",
+      "category": "Data Science",
+      "categoryKey": "datascience",
+      "callNumber": "AI.320.2",
+      "tags": [
+        "numpy",
+        "pandas",
+        "projects"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.7,
+      "author": "freeCodeCamp",
+      "url": "https://www.freecodecamp.org/learn/data-analysis-with-python/",
+      "lastUpdated": "2025-11-29",
+      "estimatedTime": "30 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-042",
+      "title": "Harvard CS109: Data Science",
+      "description": "Free lecture materials and problem sets from Harvard's introductory data science course.",
+      "category": "Data Science",
+      "categoryKey": "datascience",
+      "callNumber": "AI.320.3",
+      "tags": [
+        "lecture-notes",
+        "harvard",
+        "statistics"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Harvard University",
+      "url": "https://cs109.github.io/2015/",
+      "lastUpdated": "2025-05-20",
+      "estimatedTime": "45 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-043",
+      "title": "OWASP Top Ten",
+      "description": "The industry-standard, free reference documenting the ten most critical web application security risks.",
+      "category": "Cyber Security",
+      "categoryKey": "cybersecurity",
+      "callNumber": "SEC.400.1",
+      "tags": [
+        "owasp",
+        "web-security",
+        "standard"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.9,
+      "author": "OWASP Foundation",
+      "url": "https://owasp.org/www-project-top-ten/",
+      "lastUpdated": "2026-01-01",
+      "estimatedTime": "5 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-044",
+      "title": "Cybrary Free Courses",
+      "description": "A catalog of free introductory courses covering networking, ethical hacking, and security fundamentals.",
+      "category": "Cyber Security",
+      "categoryKey": "cybersecurity",
+      "callNumber": "SEC.400.2",
+      "tags": [
+        "ethical-hacking",
+        "networking",
+        "free"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.4,
+      "author": "Cybrary",
+      "url": "https://www.cybrary.it/catalog/",
+      "lastUpdated": "2025-10-30",
+      "estimatedTime": "10 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-045",
+      "title": "TryHackMe Free Rooms",
+      "description": "Gamified, hands-on cybersecurity labs covering topics from Linux basics to web exploitation.",
+      "category": "Cyber Security",
+      "categoryKey": "cybersecurity",
+      "callNumber": "SEC.400.3",
+      "tags": [
+        "hands-on",
+        "labs",
+        "gamified"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "TryHackMe",
+      "url": "https://tryhackme.com/",
+      "lastUpdated": "2026-04-17",
+      "estimatedTime": "Ongoing",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-046",
+      "title": "Microsoft Learn: Azure Fundamentals",
+      "description": "A free, structured learning path introducing core cloud computing and Azure concepts.",
+      "category": "Cloud Computing",
+      "categoryKey": "cloud",
+      "callNumber": "CLD.500.1",
+      "tags": [
+        "azure",
+        "fundamentals",
+        "free"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Microsoft",
+      "url": "https://learn.microsoft.com/en-us/training/paths/azure-fundamentals/",
+      "lastUpdated": "2026-02-28",
+      "estimatedTime": "10 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-047",
+      "title": "Google Cloud Skills Boost Free Labs",
+      "description": "Introductory hands-on labs covering cloud infrastructure, storage, and compute basics.",
+      "category": "Cloud Computing",
+      "categoryKey": "cloud",
+      "callNumber": "CLD.500.2",
+      "tags": [
+        "gcp",
+        "labs",
+        "hands-on"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "Google Cloud",
+      "url": "https://www.cloudskillsboost.google/",
+      "lastUpdated": "2025-12-19",
+      "estimatedTime": "8 hours",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-048",
+      "title": "CNCF Cloud Native Glossary",
+      "description": "A free, community-maintained glossary explaining core cloud-native computing concepts and terminology.",
+      "category": "Cloud Computing",
+      "categoryKey": "cloud",
+      "callNumber": "CLD.500.3",
+      "tags": [
+        "glossary",
+        "cncf",
+        "concepts"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.4,
+      "author": "CNCF",
+      "url": "https://glossary.cncf.io/",
+      "lastUpdated": "2025-09-09",
+      "estimatedTime": "3 hours",
+      "type": "Reference"
+    },
+    {
+      "id": "res-049",
+      "title": "The Linux Command Line (free book)",
+      "description": "A free, comprehensive book teaching the Linux shell from first principles to shell scripting.",
+      "category": "Linux",
+      "categoryKey": "linux",
+      "callNumber": "SYS.600.1",
+      "tags": [
+        "book",
+        "shell",
+        "scripting"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "William Shotts",
+      "url": "https://linuxcommand.org/tlcl.php",
+      "lastUpdated": "2025-07-14",
+      "estimatedTime": "20 hours",
+      "type": "Book"
+    },
+    {
+      "id": "res-050",
+      "title": "Linux Journey",
+      "description": "A free, friendly interactive site teaching Linux fundamentals through short lessons and quizzes.",
+      "category": "Linux",
+      "categoryKey": "linux",
+      "callNumber": "SYS.600.2",
+      "tags": [
+        "interactive",
+        "fundamentals",
+        "quizzes"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Linux Journey",
+      "url": "https://linuxjourney.com/",
+      "lastUpdated": "2025-06-02",
+      "estimatedTime": "12 hours",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-051",
+      "title": "Arch Wiki",
+      "description": "An exceptionally detailed, free wiki documenting Linux internals, configuration, and troubleshooting.",
+      "category": "Linux",
+      "categoryKey": "linux",
+      "callNumber": "SYS.600.3",
+      "tags": [
+        "wiki",
+        "reference",
+        "advanced"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.9,
+      "author": "Arch Linux Community",
+      "url": "https://wiki.archlinux.org/",
+      "lastUpdated": "2026-05-01",
+      "estimatedTime": "Ongoing",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-052",
+      "title": "AWS Skill Builder Free Digital Training",
+      "description": "Official free digital courses covering core AWS services and cloud practitioner fundamentals.",
+      "category": "AWS",
+      "categoryKey": "aws",
+      "callNumber": "CLD.510.1",
+      "tags": [
+        "official",
+        "cloud-practitioner",
+        "free"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Amazon Web Services",
+      "url": "https://skillbuilder.aws/",
+      "lastUpdated": "2026-03-06",
+      "estimatedTime": "15 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-053",
+      "title": "AWS Free Tier",
+      "description": "Hands-on access to real AWS services at no cost, ideal for practicing what you learn.",
+      "category": "AWS",
+      "categoryKey": "aws",
+      "callNumber": "CLD.510.2",
+      "tags": [
+        "hands-on",
+        "free-tier",
+        "practice"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "Amazon Web Services",
+      "url": "https://aws.amazon.com/free/",
+      "lastUpdated": "2026-04-25",
+      "estimatedTime": "Ongoing",
+      "type": "Tool"
+    },
+    {
+      "id": "res-054",
+      "title": "AWS Well-Architected Framework",
+      "description": "The official free guide to designing reliable, secure, and cost-efficient cloud architectures.",
+      "category": "AWS",
+      "categoryKey": "aws",
+      "callNumber": "CLD.510.3",
+      "tags": [
+        "architecture",
+        "best-practices",
+        "official"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.7,
+      "author": "Amazon Web Services",
+      "url": "https://aws.amazon.com/architecture/well-architected/",
+      "lastUpdated": "2025-11-13",
+      "estimatedTime": "10 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-055",
+      "title": "Docker Official Get Started Guide",
+      "description": "The official walkthrough covering images, containers, and Docker Compose fundamentals.",
+      "category": "Docker",
+      "categoryKey": "docker",
+      "callNumber": "CLD.520.1",
+      "tags": [
+        "official",
+        "containers",
+        "compose"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.7,
+      "author": "Docker Inc.",
+      "url": "https://docs.docker.com/get-started/",
+      "lastUpdated": "2026-02-11",
+      "estimatedTime": "6 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-056",
+      "title": "Play with Docker",
+      "description": "A free, browser-based Docker playground for practicing commands without any local install.",
+      "category": "Docker",
+      "categoryKey": "docker",
+      "callNumber": "CLD.520.2",
+      "tags": [
+        "playground",
+        "browser",
+        "practice"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "Docker Inc.",
+      "url": "https://labs.play-with-docker.com/",
+      "lastUpdated": "2025-08-08",
+      "estimatedTime": "3 hours",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-057",
+      "title": "Docker Curriculum",
+      "description": "A free, widely used tutorial that walks through building and deploying a containerized app.",
+      "category": "Docker",
+      "categoryKey": "docker",
+      "callNumber": "CLD.520.3",
+      "tags": [
+        "tutorial",
+        "deployment",
+        "beginner"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Prakhar Srivastav",
+      "url": "https://docker-curriculum.com/",
+      "lastUpdated": "2025-04-27",
+      "estimatedTime": "5 hours",
+      "type": "Tutorial"
+    },
+    {
+      "id": "res-058",
+      "title": "Kubernetes Official Documentation",
+      "description": "The official, exhaustive documentation covering concepts, tasks, and cluster administration.",
+      "category": "Kubernetes",
+      "categoryKey": "kubernetes",
+      "callNumber": "CLD.530.1",
+      "tags": [
+        "official",
+        "reference",
+        "concepts"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Kubernetes Authors",
+      "url": "https://kubernetes.io/docs/home/",
+      "lastUpdated": "2026-05-04",
+      "estimatedTime": "Ongoing",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-059",
+      "title": "Kubernetes by Example",
+      "description": "A free, hands-on set of examples showing core Kubernetes objects like pods, services, and deployments.",
+      "category": "Kubernetes",
+      "categoryKey": "kubernetes",
+      "callNumber": "CLD.530.2",
+      "tags": [
+        "examples",
+        "hands-on",
+        "objects"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Michael Hausenblas",
+      "url": "https://kubernetesbyexample.com/",
+      "lastUpdated": "2025-07-01",
+      "estimatedTime": "6 hours",
+      "type": "Tutorial"
+    },
+    {
+      "id": "res-060",
+      "title": "Katacoda-style Killercoda Scenarios",
+      "description": "Free interactive browser-based scenarios for practicing Kubernetes commands in a live cluster.",
+      "category": "Kubernetes",
+      "categoryKey": "kubernetes",
+      "callNumber": "CLD.530.3",
+      "tags": [
+        "interactive",
+        "scenarios",
+        "practice"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.5,
+      "author": "Killercoda",
+      "url": "https://killercoda.com/kubernetes",
+      "lastUpdated": "2025-12-30",
+      "estimatedTime": "5 hours",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-061",
+      "title": "W3Schools SQL Tutorial",
+      "description": "A beginner-friendly tutorial with a live SQL editor for practicing queries directly in the browser.",
+      "category": "SQL",
+      "categoryKey": "sql",
+      "callNumber": "DAT.700.1",
+      "tags": [
+        "tutorial",
+        "live-editor",
+        "queries"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "W3Schools",
+      "url": "https://www.w3schools.com/sql/",
+      "lastUpdated": "2026-01-19",
+      "estimatedTime": "8 hours",
+      "type": "Tutorial"
+    },
+    {
+      "id": "res-062",
+      "title": "SQLZoo",
+      "description": "Interactive SQL exercises that progressively build from simple SELECT statements to complex joins.",
+      "category": "SQL",
+      "categoryKey": "sql",
+      "callNumber": "DAT.700.2",
+      "tags": [
+        "interactive",
+        "exercises",
+        "joins"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.7,
+      "author": "SQLZoo",
+      "url": "https://sqlzoo.net/",
+      "lastUpdated": "2025-09-22",
+      "estimatedTime": "10 hours",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-063",
+      "title": "PostgreSQL Official Tutorial",
+      "description": "The official tutorial covering relational database concepts using PostgreSQL as the reference implementation.",
+      "category": "SQL",
+      "categoryKey": "sql",
+      "callNumber": "DAT.700.3",
+      "tags": [
+        "postgresql",
+        "official",
+        "relational"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.6,
+      "author": "PostgreSQL Global Development Group",
+      "url": "https://www.postgresql.org/docs/current/tutorial.html",
+      "lastUpdated": "2026-03-24",
+      "estimatedTime": "12 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-064",
+      "title": "MongoDB Official Documentation",
+      "description": "The official manual covering documents, collections, aggregation, and indexing.",
+      "category": "MongoDB",
+      "categoryKey": "mongodb",
+      "callNumber": "DAT.710.1",
+      "tags": [
+        "official",
+        "nosql",
+        "aggregation"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "MongoDB Inc.",
+      "url": "https://www.mongodb.com/docs/manual/",
+      "lastUpdated": "2026-04-14",
+      "estimatedTime": "10 hours",
+      "type": "Documentation"
+    },
+    {
+      "id": "res-065",
+      "title": "MongoDB University Free Courses",
+      "description": "Free, self-paced courses covering MongoDB fundamentals, data modeling, and the aggregation framework.",
+      "category": "MongoDB",
+      "categoryKey": "mongodb",
+      "callNumber": "DAT.710.2",
+      "tags": [
+        "free-courses",
+        "data-modeling",
+        "self-paced"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.7,
+      "author": "MongoDB Inc.",
+      "url": "https://learn.mongodb.com/",
+      "lastUpdated": "2025-10-11",
+      "estimatedTime": "15 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-066",
+      "title": "MongoDB Atlas Free Tier",
+      "description": "A free-forever cloud MongoDB cluster for practicing real database operations.",
+      "category": "MongoDB",
+      "categoryKey": "mongodb",
+      "callNumber": "DAT.710.3",
+      "tags": [
+        "free-tier",
+        "cloud",
+        "practice"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "MongoDB Inc.",
+      "url": "https://www.mongodb.com/cloud/atlas/register",
+      "lastUpdated": "2026-02-02",
+      "estimatedTime": "Ongoing",
+      "type": "Tool"
+    },
+    {
+      "id": "res-067",
+      "title": "MIT OpenCourseWare",
+      "description": "Free lecture notes, assignments, and exams from actual MIT engineering courses across every discipline.",
+      "category": "Engineering Subjects",
+      "categoryKey": "engineering",
+      "callNumber": "ENG.800.1",
+      "tags": [
+        "mit",
+        "open-courseware",
+        "lecture-notes"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.9,
+      "author": "MIT",
+      "url": "https://ocw.mit.edu/",
+      "lastUpdated": "2026-05-08",
+      "estimatedTime": "Ongoing",
+      "type": "Course"
+    },
+    {
+      "id": "res-068",
+      "title": "NPTEL",
+      "description": "Free video lectures and certification-track courses covering engineering subjects from top Indian institutes.",
+      "category": "Engineering Subjects",
+      "categoryKey": "engineering",
+      "callNumber": "ENG.800.2",
+      "tags": [
+        "video-lectures",
+        "india",
+        "certification"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.6,
+      "author": "NPTEL / IITs",
+      "url": "https://nptel.ac.in/",
+      "lastUpdated": "2026-03-30",
+      "estimatedTime": "Ongoing",
+      "type": "Course"
+    },
+    {
+      "id": "res-069",
+      "title": "Khan Academy: Engineering",
+      "description": "Free foundational lessons connecting core math and physics concepts to engineering applications.",
+      "category": "Engineering Subjects",
+      "categoryKey": "engineering",
+      "callNumber": "ENG.800.3",
+      "tags": [
+        "foundations",
+        "applications",
+        "free"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "Khan Academy",
+      "url": "https://www.khanacademy.org/",
+      "lastUpdated": "2025-08-17",
+      "estimatedTime": "20 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-070",
+      "title": "LeetCode Free Problems",
+      "description": "A large bank of free coding interview problems with an integrated online judge.",
+      "category": "Interview Preparation",
+      "categoryKey": "interview",
+      "callNumber": "CAR.900.1",
+      "tags": [
+        "coding-problems",
+        "online-judge",
+        "practice"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.7,
+      "author": "LeetCode",
+      "url": "https://leetcode.com/problemset/",
+      "lastUpdated": "2026-04-29",
+      "estimatedTime": "Ongoing",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-071",
+      "title": "The Odin Project: Interview Prep",
+      "description": "Free curated resources and problem sets to prepare for technical coding interviews.",
+      "category": "Interview Preparation",
+      "categoryKey": "interview",
+      "callNumber": "CAR.900.2",
+      "tags": [
+        "curated",
+        "technical",
+        "prep"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.4,
+      "author": "The Odin Project",
+      "url": "https://www.theodinproject.com/",
+      "lastUpdated": "2025-06-26",
+      "estimatedTime": "20 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-072",
+      "title": "GeeksforGeeks Interview Corner",
+      "description": "A free hub of company-wise interview experiences, questions, and preparation guides.",
+      "category": "Interview Preparation",
+      "categoryKey": "interview",
+      "callNumber": "CAR.900.3",
+      "tags": [
+        "experiences",
+        "company-wise",
+        "guides"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.5,
+      "author": "GeeksforGeeks",
+      "url": "https://www.geeksforgeeks.org/interview-corner/",
+      "lastUpdated": "2026-01-08",
+      "estimatedTime": "15 hours",
+      "type": "Article"
+    },
+    {
+      "id": "res-073",
+      "title": "Khan Academy: Mathematics",
+      "description": "A free, comprehensive mathematics curriculum from arithmetic through multivariable calculus.",
+      "category": "Mathematics",
+      "categoryKey": "math",
+      "callNumber": "SCI.010.1",
+      "tags": [
+        "arithmetic",
+        "calculus",
+        "curriculum"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.9,
+      "author": "Khan Academy",
+      "url": "https://www.khanacademy.org/math",
+      "lastUpdated": "2026-05-02",
+      "estimatedTime": "Ongoing",
+      "type": "Course"
+    },
+    {
+      "id": "res-074",
+      "title": "Paul's Online Math Notes",
+      "description": "Free, detailed lecture notes and practice problems for algebra, calculus, and differential equations.",
+      "category": "Mathematics",
+      "categoryKey": "math",
+      "callNumber": "SCI.010.2",
+      "tags": [
+        "notes",
+        "calculus",
+        "practice-problems"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Paul Dawkins",
+      "url": "https://tutorial.math.lamar.edu/",
+      "lastUpdated": "2025-09-01",
+      "estimatedTime": "40 hours",
+      "type": "Reference"
+    },
+    {
+      "id": "res-075",
+      "title": "3Blue1Brown",
+      "description": "Free visually-driven video explainers that build deep intuition for linear algebra and calculus.",
+      "category": "Mathematics",
+      "categoryKey": "math",
+      "callNumber": "SCI.010.3",
+      "tags": [
+        "visual",
+        "intuition",
+        "linear-algebra"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.9,
+      "author": "Grant Sanderson",
+      "url": "https://www.3blue1brown.com/",
+      "lastUpdated": "2025-11-24",
+      "estimatedTime": "10 hours",
+      "type": "Video"
+    },
+    {
+      "id": "res-076",
+      "title": "Khan Academy: Physics",
+      "description": "A free course covering mechanics, electricity, magnetism, and waves with practice exercises.",
+      "category": "Physics",
+      "categoryKey": "physics",
+      "callNumber": "SCI.020.1",
+      "tags": [
+        "mechanics",
+        "electricity",
+        "practice"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "Khan Academy",
+      "url": "https://www.khanacademy.org/science/physics",
+      "lastUpdated": "2026-02-15",
+      "estimatedTime": "30 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-077",
+      "title": "MIT 8.01: Classical Mechanics",
+      "description": "Free complete lecture videos, notes, and problem sets from MIT's introductory physics course.",
+      "category": "Physics",
+      "categoryKey": "physics",
+      "callNumber": "SCI.020.2",
+      "tags": [
+        "mechanics",
+        "mit",
+        "lecture-videos"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.7,
+      "author": "MIT",
+      "url": "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/",
+      "lastUpdated": "2025-07-19",
+      "estimatedTime": "50 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-078",
+      "title": "HyperPhysics",
+      "description": "A free, richly cross-linked concept map covering nearly every topic in undergraduate physics.",
+      "category": "Physics",
+      "categoryKey": "physics",
+      "callNumber": "SCI.020.3",
+      "tags": [
+        "concept-map",
+        "reference",
+        "undergraduate"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Georgia State University",
+      "url": "http://hyperphysics.phy-astr.gsu.edu/hbase/index.html",
+      "lastUpdated": "2025-05-06",
+      "estimatedTime": "Ongoing",
+      "type": "Reference"
+    },
+    {
+      "id": "res-079",
+      "title": "Khan Academy: Chemistry",
+      "description": "A free course covering atomic structure, bonding, reactions, and stoichiometry.",
+      "category": "Chemistry",
+      "categoryKey": "chemistry",
+      "callNumber": "SCI.030.1",
+      "tags": [
+        "atomic-structure",
+        "bonding",
+        "stoichiometry"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.7,
+      "author": "Khan Academy",
+      "url": "https://www.khanacademy.org/science/chemistry",
+      "lastUpdated": "2026-03-21",
+      "estimatedTime": "25 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-080",
+      "title": "LibreTexts Chemistry",
+      "description": "A free, open-access library of chemistry textbooks spanning general, organic, and physical chemistry.",
+      "category": "Chemistry",
+      "categoryKey": "chemistry",
+      "callNumber": "SCI.030.2",
+      "tags": [
+        "textbooks",
+        "open-access",
+        "organic"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.6,
+      "author": "LibreTexts",
+      "url": "https://chem.libretexts.org/",
+      "lastUpdated": "2025-12-12",
+      "estimatedTime": "Ongoing",
+      "type": "Book"
+    },
+    {
+      "id": "res-081",
+      "title": "ChemCollective Virtual Labs",
+      "description": "Free virtual chemistry lab simulations for practicing titrations and stoichiometry problems.",
+      "category": "Chemistry",
+      "categoryKey": "chemistry",
+      "callNumber": "SCI.030.3",
+      "tags": [
+        "simulations",
+        "virtual-lab",
+        "practice"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.4,
+      "author": "Carnegie Mellon University",
+      "url": "http://chemcollective.org/",
+      "lastUpdated": "2025-04-03",
+      "estimatedTime": "8 hours",
+      "type": "Interactive"
+    },
+    {
+      "id": "res-082",
+      "title": "All About Circuits",
+      "description": "A free, extensive textbook covering DC/AC circuits, semiconductors, and digital electronics.",
+      "category": "Electronics",
+      "categoryKey": "electronics",
+      "callNumber": "ENG.810.1",
+      "tags": [
+        "circuits",
+        "semiconductors",
+        "textbook"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "All About Circuits",
+      "url": "https://www.allaboutcircuits.com/textbook/",
+      "lastUpdated": "2026-01-27",
+      "estimatedTime": "30 hours",
+      "type": "Book"
+    },
+    {
+      "id": "res-083",
+      "title": "MIT 6.002: Circuits and Electronics",
+      "description": "Free lecture notes, videos, and labs from MIT's foundational circuits course.",
+      "category": "Electronics",
+      "categoryKey": "electronics",
+      "callNumber": "ENG.810.2",
+      "tags": [
+        "mit",
+        "circuits",
+        "labs"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.7,
+      "author": "MIT",
+      "url": "https://ocw.mit.edu/courses/6-002-circuits-and-electronics-spring-2007/",
+      "lastUpdated": "2025-06-09",
+      "estimatedTime": "45 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-084",
+      "title": "SparkFun Electronics Tutorials",
+      "description": "Free, project-based tutorials introducing electronics concepts through real hobbyist projects.",
+      "category": "Electronics",
+      "categoryKey": "electronics",
+      "callNumber": "ENG.810.3",
+      "tags": [
+        "projects",
+        "hobbyist",
+        "hands-on"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.5,
+      "author": "SparkFun",
+      "url": "https://learn.sparkfun.com/",
+      "lastUpdated": "2025-10-15",
+      "estimatedTime": "12 hours",
+      "type": "Tutorial"
+    },
+    {
+      "id": "res-085",
+      "title": "MIT 2.001: Mechanics and Materials",
+      "description": "Free course materials covering statics, stress, and material behavior for mechanical engineers.",
+      "category": "Mechanical",
+      "categoryKey": "mechanical",
+      "callNumber": "ENG.820.1",
+      "tags": [
+        "statics",
+        "materials",
+        "mit"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.6,
+      "author": "MIT",
+      "url": "https://ocw.mit.edu/courses/2-001-mechanics-materials-i-fall-2006/",
+      "lastUpdated": "2025-08-29",
+      "estimatedTime": "40 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-086",
+      "title": "NPTEL: Mechanical Engineering",
+      "description": "Free video lecture series covering thermodynamics, fluid mechanics, and machine design.",
+      "category": "Mechanical",
+      "categoryKey": "mechanical",
+      "callNumber": "ENG.820.2",
+      "tags": [
+        "thermodynamics",
+        "fluid-mechanics",
+        "design"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.5,
+      "author": "NPTEL",
+      "url": "https://nptel.ac.in/course.html",
+      "lastUpdated": "2026-02-06",
+      "estimatedTime": "Ongoing",
+      "type": "Course"
+    },
+    {
+      "id": "res-087",
+      "title": "Engineering Toolbox",
+      "description": "A free, practical reference of formulas, standards, and data for mechanical engineering design.",
+      "category": "Mechanical",
+      "categoryKey": "mechanical",
+      "callNumber": "ENG.820.3",
+      "tags": [
+        "formulas",
+        "standards",
+        "reference"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.4,
+      "author": "Engineering ToolBox",
+      "url": "https://www.engineeringtoolbox.com/",
+      "lastUpdated": "2025-11-02",
+      "estimatedTime": "Ongoing",
+      "type": "Reference"
+    },
+    {
+      "id": "res-088",
+      "title": "MIT 1.050: Solid Mechanics",
+      "description": "Free lecture notes and assignments covering structural analysis fundamentals for civil engineers.",
+      "category": "Civil",
+      "categoryKey": "civil",
+      "callNumber": "ENG.830.1",
+      "tags": [
+        "structural-analysis",
+        "mit",
+        "fundamentals"
+      ],
+      "difficulty": "Advanced",
+      "language": "English",
+      "rating": 4.5,
+      "author": "MIT",
+      "url": "https://ocw.mit.edu/courses/1-050-solid-mechanics-fall-2004/",
+      "lastUpdated": "2025-05-14",
+      "estimatedTime": "35 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-089",
+      "title": "NPTEL: Civil Engineering",
+      "description": "Free video courses covering structural engineering, geotechnical engineering, and surveying.",
+      "category": "Civil",
+      "categoryKey": "civil",
+      "callNumber": "ENG.830.2",
+      "tags": [
+        "structural",
+        "geotechnical",
+        "surveying"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.5,
+      "author": "NPTEL",
+      "url": "https://nptel.ac.in/course.html",
+      "lastUpdated": "2026-01-22",
+      "estimatedTime": "Ongoing",
+      "type": "Course"
+    },
+    {
+      "id": "res-090",
+      "title": "The Constructor",
+      "description": "A free library of practical articles on construction methods, materials, and structural design.",
+      "category": "Civil",
+      "categoryKey": "civil",
+      "callNumber": "ENG.830.3",
+      "tags": [
+        "construction",
+        "materials",
+        "practical"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.3,
+      "author": "The Constructor",
+      "url": "https://theconstructor.org/",
+      "lastUpdated": "2025-09-27",
+      "estimatedTime": "Ongoing",
+      "type": "Article"
+    },
+    {
+      "id": "res-091",
+      "title": "Coursera: Learning How to Learn (audit)",
+      "description": "A free-to-audit course on effective learning techniques, memory, and overcoming procrastination.",
+      "category": "Soft Skills",
+      "categoryKey": "softskills",
+      "callNumber": "CAR.910.1",
+      "tags": [
+        "learning-techniques",
+        "memory",
+        "free-audit"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.8,
+      "author": "UC San Diego",
+      "url": "https://www.coursera.org/learn/learning-how-to-learn",
+      "lastUpdated": "2025-07-07",
+      "estimatedTime": "10 hours",
+      "type": "Course"
+    },
+    {
+      "id": "res-092",
+      "title": "MindTools Free Resources",
+      "description": "Free articles and self-assessments covering communication, leadership, and time management skills.",
+      "category": "Soft Skills",
+      "categoryKey": "softskills",
+      "callNumber": "CAR.910.2",
+      "tags": [
+        "communication",
+        "leadership",
+        "time-management"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.4,
+      "author": "MindTools",
+      "url": "https://www.mindtools.com/",
+      "lastUpdated": "2025-12-01",
+      "estimatedTime": "Ongoing",
+      "type": "Article"
+    },
+    {
+      "id": "res-093",
+      "title": "Toastmasters Free Resources",
+      "description": "Free public-speaking and leadership guides from the world's leading communication education organization.",
+      "category": "Soft Skills",
+      "categoryKey": "softskills",
+      "callNumber": "CAR.910.3",
+      "tags": [
+        "public-speaking",
+        "leadership",
+        "guides"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.6,
+      "author": "Toastmasters International",
+      "url": "https://www.toastmasters.org/resources",
+      "lastUpdated": "2026-03-03",
+      "estimatedTime": "8 hours",
+      "type": "Reference"
+    },
+    {
+      "id": "res-094",
+      "title": "LinkedIn Learning Free Courses",
+      "description": "A rotating selection of free courses on resume writing, networking, and career growth.",
+      "category": "Career Development",
+      "categoryKey": "career",
+      "callNumber": "CAR.920.1",
+      "tags": [
+        "resume",
+        "networking",
+        "free-selection"
+      ],
+      "difficulty": "Beginner",
+      "language": "English",
+      "rating": 4.3,
+      "author": "LinkedIn",
+      "url": "https://www.linkedin.com/learning/",
+      "lastUpdated": "2026-02-24",
+      "estimatedTime": "Ongoing",
+      "type": "Course"
+    },
+    {
+      "id": "res-095",
+      "title": "Big Interview Free Guides",
+      "description": "Free guides and articles covering interview strategy, salary negotiation, and career planning.",
+      "category": "Career Development",
+      "categoryKey": "career",
+      "callNumber": "CAR.920.2",
+      "tags": [
+        "interview-strategy",
+        "negotiation",
+        "planning"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.4,
+      "author": "Big Interview",
+      "url": "https://biginterview.com/blog/",
+      "lastUpdated": "2025-10-05",
+      "estimatedTime": "6 hours",
+      "type": "Article"
+    },
+    {
+      "id": "res-096",
+      "title": "80,000 Hours Career Guide",
+      "description": "A free, research-backed guide to choosing a fulfilling and impactful career path.",
+      "category": "Career Development",
+      "categoryKey": "career",
+      "callNumber": "CAR.920.3",
+      "tags": [
+        "career-planning",
+        "research-backed",
+        "impact"
+      ],
+      "difficulty": "Intermediate",
+      "language": "English",
+      "rating": 4.7,
+      "author": "80,000 Hours",
+      "url": "https://80000hours.org/career-guide/",
+      "lastUpdated": "2025-06-11",
+      "estimatedTime": "12 hours",
+      "type": "Book"
+    }
+  ],
+  "categories": [
+    {
+      "key": "html",
+      "name": "HTML",
+      "prefix": "WEB.100",
+      "count": 3
+    },
+    {
+      "key": "css",
+      "name": "CSS",
+      "prefix": "WEB.110",
+      "count": 3
+    },
+    {
+      "key": "javascript",
+      "name": "JavaScript",
+      "prefix": "WEB.120",
+      "count": 3
+    },
+    {
+      "key": "python",
+      "name": "Python",
+      "prefix": "LANG.200",
+      "count": 3
+    },
+    {
+      "key": "java",
+      "name": "Java",
+      "prefix": "LANG.210",
+      "count": 3
+    },
+    {
+      "key": "c",
+      "name": "C",
+      "prefix": "LANG.220",
+      "count": 3
+    },
+    {
+      "key": "cpp",
+      "name": "C++",
+      "prefix": "LANG.230",
+      "count": 3
+    },
+    {
+      "key": "react",
+      "name": "React",
+      "prefix": "WEB.130",
+      "count": 3
+    },
+    {
+      "key": "nodejs",
+      "name": "Node.js",
+      "prefix": "WEB.140",
+      "count": 3
+    },
+    {
+      "key": "angular",
+      "name": "Angular",
+      "prefix": "WEB.150",
+      "count": 3
+    },
+    {
+      "key": "vue",
+      "name": "Vue",
+      "prefix": "WEB.160",
+      "count": 3
+    },
+    {
+      "key": "ai",
+      "name": "AI",
+      "prefix": "AI.300",
+      "count": 3
+    },
+    {
+      "key": "ml",
+      "name": "Machine Learning",
+      "prefix": "AI.310",
+      "count": 3
+    },
+    {
+      "key": "datascience",
+      "name": "Data Science",
+      "prefix": "AI.320",
+      "count": 3
+    },
+    {
+      "key": "cybersecurity",
+      "name": "Cyber Security",
+      "prefix": "SEC.400",
+      "count": 3
+    },
+    {
+      "key": "cloud",
+      "name": "Cloud Computing",
+      "prefix": "CLD.500",
+      "count": 3
+    },
+    {
+      "key": "linux",
+      "name": "Linux",
+      "prefix": "SYS.600",
+      "count": 3
+    },
+    {
+      "key": "aws",
+      "name": "AWS",
+      "prefix": "CLD.510",
+      "count": 3
+    },
+    {
+      "key": "docker",
+      "name": "Docker",
+      "prefix": "CLD.520",
+      "count": 3
+    },
+    {
+      "key": "kubernetes",
+      "name": "Kubernetes",
+      "prefix": "CLD.530",
+      "count": 3
+    },
+    {
+      "key": "sql",
+      "name": "SQL",
+      "prefix": "DAT.700",
+      "count": 3
+    },
+    {
+      "key": "mongodb",
+      "name": "MongoDB",
+      "prefix": "DAT.710",
+      "count": 3
+    },
+    {
+      "key": "engineering",
+      "name": "Engineering Subjects",
+      "prefix": "ENG.800",
+      "count": 3
+    },
+    {
+      "key": "interview",
+      "name": "Interview Preparation",
+      "prefix": "CAR.900",
+      "count": 3
+    },
+    {
+      "key": "math",
+      "name": "Mathematics",
+      "prefix": "SCI.010",
+      "count": 3
+    },
+    {
+      "key": "physics",
+      "name": "Physics",
+      "prefix": "SCI.020",
+      "count": 3
+    },
+    {
+      "key": "chemistry",
+      "name": "Chemistry",
+      "prefix": "SCI.030",
+      "count": 3
+    },
+    {
+      "key": "electronics",
+      "name": "Electronics",
+      "prefix": "ENG.810",
+      "count": 3
+    },
+    {
+      "key": "mechanical",
+      "name": "Mechanical",
+      "prefix": "ENG.820",
+      "count": 3
+    },
+    {
+      "key": "civil",
+      "name": "Civil",
+      "prefix": "ENG.830",
+      "count": 3
+    },
+    {
+      "key": "softskills",
+      "name": "Soft Skills",
+      "prefix": "CAR.910",
+      "count": 3
+    },
+    {
+      "key": "career",
+      "name": "Career Development",
+      "prefix": "CAR.920",
+      "count": 3
+    }
+  ]
+};
+
+</script>
+<script>
+/* =========================================================================
+   RESOURCE HUB — single-file application script
+   Everything (utils, storage, search, catalog, routing, and every
+   "page's" behaviour) lives in this one file so the whole app can ship
+   as a single HTML document. Routing uses the URL hash (#resources,
+   #trending?category=python, etc.) so it still works opened directly
+   from disk via file:// with no server and no page reloads.
+   ========================================================================= */
+(function (global) {
+  "use strict";
+
+  const RH = {};
+  const DATA = global.RESOURCE_DATA || { resources: [], categories: [] };
+
+  /* =========================================================
+     UTILS
+     ========================================================= */
+  RH.qs = (sel, ctx) => (ctx || document).querySelector(sel);
+  RH.qsa = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
+
+  RH.debounce = function (fn, wait) {
+    let t;
+    return function (...args) {
+      clearTimeout(t);
+      t = setTimeout(() => fn.apply(this, args), wait);
+    };
+  };
+
+  RH.escapeHtml = function (str) {
+    if (str == null) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  };
+
+  RH.highlight = function (text, query) {
+    const safe = RH.escapeHtml(text);
+    if (!query) return safe;
+    const q = query.trim();
+    if (!q) return safe;
+    try {
+      const escapedQ = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const re = new RegExp("(" + escapedQ + ")", "ig");
+      return safe.replace(re, "<mark>$1</mark>");
+    } catch (e) {
+      return safe;
+    }
+  };
+
+  const STORAGE_PREFIX = "resourceHub:";
+  RH.storage = {
+    get(key, fallback) {
+      try {
+        const raw = localStorage.getItem(STORAGE_PREFIX + key);
+        if (raw === null) return fallback;
+        return JSON.parse(raw);
+      } catch (e) {
+        return fallback;
+      }
+    },
+    set(key, value) {
+      try {
+        localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(value));
+        return true;
+      } catch (e) {
+        console.warn("Resource Hub: could not write to localStorage", e);
+        return false;
+      }
+    },
+    remove(key) {
+      try {
+        localStorage.removeItem(STORAGE_PREFIX + key);
+      } catch (e) {
+        /* noop */
+      }
+    },
+  };
+
+  RH.toast = function (message, type) {
+    type = type || "info";
+    const colors = {
+      success: "linear-gradient(120deg,#1F6F5C,#2f9c81)",
+      error: "linear-gradient(120deg,#B23A34,#d9564f)",
+      info: "linear-gradient(120deg,#33343a,#54565f)",
+    };
+    if (global.Toastify) {
+      global.Toastify({
+        text: message,
+        duration: 3200,
+        gravity: "top",
+        position: "right",
+        close: true,
+        style: { background: colors[type] || colors.info, borderRadius: "10px", fontFamily: "Inter, sans-serif" },
+      }).showToast();
+    } else {
+      const el = document.createElement("div");
+      el.className = "toast-fallback";
+      el.textContent = message;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+  };
+
+  RH.copyToClipboard = async function (text) {
+    try {
+      if (navigator.clipboard && global.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  /* =========================================================
+     HASH ROUTER
+     Hash format: #route?key=value&key2=value2
+     ========================================================= */
+  const ROUTES = ["home", "resources", "categories", "trending", "bookmarks", "about", "faq", "privacy", "terms", "contact"];
+  let currentRoute = "home";
+  let currentQuery = "";
+
+  function parseHash() {
+    const raw = (global.location.hash || "").replace(/^#/, "");
+    const qIndex = raw.indexOf("?");
+    const route = (qIndex === -1 ? raw : raw.slice(0, qIndex)) || "home";
+    const query = qIndex === -1 ? "" : raw.slice(qIndex + 1);
+    return { route, query };
+  }
+
+  RH.getParam = function (name) {
+    return new URLSearchParams(currentQuery).get(name);
+  };
+  RH.setParam = function (name, value) {
+    const params = new URLSearchParams(currentQuery);
+    if (value === null || value === undefined || value === "") params.delete(name);
+    else params.set(name, value);
+    currentQuery = params.toString();
+    const newHash = "#" + currentRoute + (currentQuery ? "?" + currentQuery : "");
+    global.history.replaceState(null, "", newHash);
+  };
+  RH.navigate = function (route, query) {
+    global.location.hash = "#" + route + (query ? "?" + query : "");
+  };
+
+  const routeHandlers = {};
+  RH.onRoute = function (route, handler) {
+    routeHandlers[route] = handler;
+  };
+
+  function render() {
+    const { route, query } = parseHash();
+    const valid = ROUTES.includes(route) ? route : "404";
+    currentRoute = ROUTES.includes(route) ? route : "home";
+    currentQuery = query;
+
+    ROUTES.concat("404").forEach((r) => {
+      const el = document.getElementById("route-" + r);
+      if (el) el.style.display = r === valid ? "" : "none";
+    });
+    RH.qsa(".main-nav a[data-route]").forEach((a) => {
+      a.classList.toggle("active", a.dataset.route === valid);
+    });
+    global.scrollTo({ top: 0, behavior: "auto" });
+
+    if (routeHandlers[valid]) routeHandlers[valid]();
+    document.dispatchEvent(new CustomEvent("rh:route-changed", { detail: { route: valid } }));
+  }
+
+  global.addEventListener("hashchange", render);
+  RH.__initRouter = function () {
+    render();
+  };
+
+  /* =========================================================
+     STORE (bookmarks, search history, counters, theme)
+     ========================================================= */
+  const KEYS = { bookmarks: "bookmarks", history: "searchHistory", views: "viewCounts", searches: "searchCounts", theme: "theme" };
+  const MAX_HISTORY = 20;
+
+  const Store = {
+    getBookmarks() {
+      return RH.storage.get(KEYS.bookmarks, []);
+    },
+    isBookmarked(id) {
+      return Store.getBookmarks().includes(id);
+    },
+    toggleBookmark(id) {
+      let list = Store.getBookmarks();
+      let added;
+      if (list.includes(id)) {
+        list = list.filter((x) => x !== id);
+        added = false;
+      } else {
+        list.push(id);
+        added = true;
+      }
+      RH.storage.set(KEYS.bookmarks, list);
+      document.dispatchEvent(new CustomEvent("rh:bookmarks-changed", { detail: { id, added } }));
+      return added;
+    },
+    clearBookmarks() {
+      RH.storage.set(KEYS.bookmarks, []);
+      document.dispatchEvent(new CustomEvent("rh:bookmarks-changed", { detail: { cleared: true } }));
+    },
+    setBookmarks(list) {
+      RH.storage.set(KEYS.bookmarks, Array.isArray(list) ? list : []);
+      document.dispatchEvent(new CustomEvent("rh:bookmarks-changed", { detail: { imported: true } }));
+    },
+    getHistory() {
+      return RH.storage.get(KEYS.history, []);
+    },
+    addHistory(term) {
+      term = (term || "").trim();
+      if (!term) return;
+      let list = Store.getHistory().filter((t) => t.toLowerCase() !== term.toLowerCase());
+      list.unshift(term);
+      if (list.length > MAX_HISTORY) list = list.slice(0, MAX_HISTORY);
+      RH.storage.set(KEYS.history, list);
+      const counts = RH.storage.get(KEYS.searches, {});
+      const key = term.toLowerCase();
+      counts[key] = (counts[key] || 0) + 1;
+      RH.storage.set(KEYS.searches, counts);
+    },
+    clearHistory() {
+      RH.storage.set(KEYS.history, []);
+    },
+    getSearchCounts() {
+      return RH.storage.get(KEYS.searches, {});
+    },
+    logView(id) {
+      const counts = RH.storage.get(KEYS.views, {});
+      counts[id] = (counts[id] || 0) + 1;
+      RH.storage.set(KEYS.views, counts);
+    },
+    getViewCounts() {
+      return RH.storage.get(KEYS.views, {});
+    },
+    getTheme() {
+      const saved = RH.storage.get(KEYS.theme, null);
+      if (saved) return saved;
+      return global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    },
+    setTheme(theme) {
+      RH.storage.set(KEYS.theme, theme);
+    },
+  };
+  RH.Store = Store;
+
+  /* =========================================================
+     SEARCH ENGINE
+     ========================================================= */
+  function norm(s) {
+    return (s || "").toLowerCase();
+  }
+  const Search = {
+    search(query) {
+      const q = norm(query).trim();
+      if (!q) return [];
+      const words = q.split(/\s+/).filter(Boolean);
+      const scored = [];
+      for (const r of DATA.resources) {
+        const title = norm(r.title);
+        const desc = norm(r.description);
+        const cat = norm(r.category);
+        const tags = r.tags.map(norm);
+        const author = norm(r.author);
+        let score = 0;
+        if (title === q) score += 100;
+        if (title.startsWith(q)) score += 40;
+        if (title.includes(q)) score += 25;
+        if (cat === q) score += 35;
+        if (cat.includes(q)) score += 15;
+        if (tags.includes(q)) score += 30;
+        if (tags.some((t) => t.includes(q))) score += 10;
+        if (desc.includes(q)) score += 8;
+        if (author.includes(q)) score += 6;
+        let wordHits = 0;
+        for (const w of words) {
+          if (title.includes(w)) wordHits += 3;
+          else if (tags.some((t) => t.includes(w))) wordHits += 2;
+          else if (cat.includes(w)) wordHits += 2;
+          else if (desc.includes(w)) wordHits += 1;
+        }
+        score += wordHits;
+        if (score > 0) scored.push({ item: r, score });
+      }
+      scored.sort((a, b) => b.score - a.score);
+      return scored;
+    },
+    suggestions(query, limit) {
+      limit = limit || 6;
+      return Search.search(query).slice(0, limit).map((s) => s.item);
+    },
+    popularSearches(limit) {
+      limit = limit || 8;
+      const seed = ["Python", "JavaScript", "React", "AI", "Machine Learning", "SQL", "Docker", "Interview Preparation", "Linux", "AWS"];
+      const counts = RH.Store.getSearchCounts();
+      const merged = new Map();
+      seed.forEach((s) => merged.set(s.toLowerCase(), { term: s, count: 0 }));
+      Object.entries(counts).forEach(([term, count]) => {
+        const key = term.toLowerCase();
+        if (merged.has(key)) merged.get(key).count += count;
+        else merged.set(key, { term, count });
+      });
+      return Array.from(merged.values()).sort((a, b) => b.count - a.count).slice(0, limit);
+    },
+  };
+  RH.Search = Search;
+
+  /* =========================================================
+     CATALOG (data access, filter/sort, card rendering)
+     ========================================================= */
+  const Catalog = {
+    all() {
+      return DATA.resources;
+    },
+    categories() {
+      return DATA.categories;
+    },
+    getById(id) {
+      return DATA.resources.find((r) => r.id === id);
+    },
+    getByIds(ids) {
+      const set = new Set(ids);
+      return DATA.resources.filter((r) => set.has(r.id));
+    },
+    filter(opts) {
+      opts = opts || {};
+      let list = DATA.resources.slice();
+      if (opts.query && opts.query.trim()) {
+        const results = RH.Search.search(opts.query.trim());
+        const order = new Map(results.map((r, i) => [r.item.id, i]));
+        list = list.filter((r) => order.has(r.id));
+        list.sort((a, b) => order.get(a.id) - order.get(b.id));
+      }
+      if (opts.categories && opts.categories.length) {
+        const set = new Set(opts.categories);
+        list = list.filter((r) => set.has(r.categoryKey));
+      }
+      if (opts.difficulties && opts.difficulties.length) {
+        const set = new Set(opts.difficulties);
+        list = list.filter((r) => set.has(r.difficulty));
+      }
+      if (opts.types && opts.types.length) {
+        const set = new Set(opts.types);
+        list = list.filter((r) => set.has(r.type));
+      }
+      if (opts.languages && opts.languages.length) {
+        const set = new Set(opts.languages);
+        list = list.filter((r) => set.has(r.language));
+      }
+      if (opts.minRating) list = list.filter((r) => r.rating >= opts.minRating);
+      return list;
+    },
+    sort(list, key) {
+      const arr = list.slice();
+      switch (key) {
+        case "az":
+          arr.sort((a, b) => a.title.localeCompare(b.title));
+          break;
+        case "za":
+          arr.sort((a, b) => b.title.localeCompare(a.title));
+          break;
+        case "rating":
+          arr.sort((a, b) => b.rating - a.rating);
+          break;
+        case "newest":
+        case "updated":
+          arr.sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated));
+          break;
+        case "popular": {
+          const views = RH.Store.getViewCounts();
+          arr.sort((a, b) => (views[b.id] || 0) - (views[a.id] || 0));
+          break;
+        }
+        default:
+          break;
+      }
+      return arr;
+    },
+    facetValues(field) {
+      return Array.from(new Set(DATA.resources.map((r) => r[field]))).sort();
+    },
+    cardHTML(resource, opts) {
+      opts = opts || {};
+      const q = opts.query || "";
+      const bookmarked = RH.Store.isBookmarked(resource.id);
+      const title = RH.highlight(resource.title, q);
+      const desc = RH.highlight(resource.description, q);
+      const tags = resource.tags.slice(0, 4).map((t) => `<span class="rc-tag">#${RH.escapeHtml(t)}</span>`).join("");
+      return `
+      <article class="resource-card" data-id="${resource.id}" data-category="${resource.categoryKey}" role="listitem">
+        <div class="rc-top">
+          <span class="rc-call mono" title="Catalog number">${RH.escapeHtml(resource.callNumber)}</span>
+          <span class="rc-type">${RH.escapeHtml(resource.type)}</span>
+        </div>
+        <h3 class="rc-title">${title}</h3>
+        <p class="rc-desc">${desc}</p>
+        <div class="rc-tags">${tags}</div>
+        <div class="rc-meta">
+          <span><i class="fa-regular fa-folder-open" aria-hidden="true"></i>${RH.escapeHtml(resource.category)}</span>
+          <span class="badge-diff ${resource.difficulty}">${resource.difficulty}</span>
+          <span><i class="fa-regular fa-clock" aria-hidden="true"></i>${RH.escapeHtml(resource.estimatedTime)}</span>
+        </div>
+        <div class="rc-footer">
+          <span class="rc-rating"><i class="fa-solid fa-star" aria-hidden="true"></i>${resource.rating.toFixed(1)}</span>
+          <div class="rc-actions">
+            <button class="icon-btn btn-copy" data-id="${resource.id}" title="Copy link" aria-label="Copy link to ${RH.escapeHtml(resource.title)}"><i class="fa-regular fa-copy" aria-hidden="true"></i></button>
+            <button class="icon-btn btn-share" data-id="${resource.id}" title="Share" aria-label="Share ${RH.escapeHtml(resource.title)}"><i class="fa-solid fa-share-nodes" aria-hidden="true"></i></button>
+            <button class="icon-btn btn-bookmark ${bookmarked ? "bookmarked" : ""}" data-id="${resource.id}" title="${bookmarked ? "Remove bookmark" : "Add bookmark"}" aria-pressed="${bookmarked}" aria-label="Bookmark ${RH.escapeHtml(resource.title)}"><i class="fa-${bookmarked ? "solid" : "regular"} fa-bookmark" aria-hidden="true"></i></button>
+            <a class="btn btn-primary btn-sm btn-visit" href="${RH.escapeHtml(resource.url)}" target="_blank" rel="noopener noreferrer" data-id="${resource.id}">Visit <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </article>`;
+    },
+    renderGrid(container, list, opts) {
+      opts = opts || {};
+      if (!list.length) {
+        container.innerHTML = `
+          <div class="empty-state" role="status">
+            <div class="es-icon"><i class="fa-regular fa-folder-open" aria-hidden="true"></i></div>
+            <h3>No resources found</h3>
+            <p>Try a different search term or clear some filters.</p>
+          </div>`;
+        return;
+      }
+      container.innerHTML = list.map((r) => Catalog.cardHTML(r, opts)).join("");
+    },
+    bindCardEvents(container) {
+      if (container.__rhBound) return;
+      container.__rhBound = true;
+      container.addEventListener("click", (e) => {
+        const bookmarkBtn = e.target.closest(".btn-bookmark");
+        const copyBtn = e.target.closest(".btn-copy");
+        const shareBtn = e.target.closest(".btn-share");
+        const visitLink = e.target.closest(".btn-visit");
+        if (bookmarkBtn) {
+          const id = bookmarkBtn.dataset.id;
+          const added = RH.Store.toggleBookmark(id);
+          const icon = bookmarkBtn.querySelector("i");
+          bookmarkBtn.classList.toggle("bookmarked", added);
+          bookmarkBtn.setAttribute("aria-pressed", String(added));
+          bookmarkBtn.title = added ? "Remove bookmark" : "Add bookmark";
+          if (icon) icon.className = `fa-${added ? "solid" : "regular"} fa-bookmark`;
+          RH.toast(added ? "Bookmarked" : "Bookmark removed", "success");
+          return;
+        }
+        if (copyBtn) {
+          const id = copyBtn.dataset.id;
+          const resource = Catalog.getById(id);
+          if (resource) RH.copyToClipboard(resource.url).then((ok) => RH.toast(ok ? "Link copied to clipboard" : "Could not copy link", ok ? "success" : "error"));
+          return;
+        }
+        if (shareBtn) {
+          const id = shareBtn.dataset.id;
+          const resource = Catalog.getById(id);
+          if (resource) {
+            if (navigator.share) navigator.share({ title: resource.title, text: resource.description, url: resource.url }).catch(() => {});
+            else RH.copyToClipboard(resource.url).then((ok) => RH.toast(ok ? "Sharing not supported here — link copied instead" : "Could not share", "info"));
+          }
+          return;
+        }
+        if (visitLink) {
+          RH.Store.logView(visitLink.dataset.id);
+          return;
+        }
+      });
+    },
+  };
+  RH.Catalog = Catalog;
+
+  /* =========================================================
+     SEARCH WIDGET (reusable instant-search dropdown)
+     ========================================================= */
+  function attachSearchWidget({ wrapEl, inputEl, suggestionsEl, clearEl, onSubmit }) {
+    let activeIndex = -1;
+
+    function renderIdle() {
+      const history = RH.Store.getHistory();
+      const popular = RH.Search.popularSearches(8);
+      let html = "";
+      if (history.length) {
+        html += `<div class="sg-section">Recent searches</div>`;
+        html += history.slice(0, 5).map((h) => `<div class="sg-item" data-term="${RH.escapeHtml(h)}" role="option"><i class="fa-regular fa-clock" aria-hidden="true"></i><span class="sg-title">${RH.escapeHtml(h)}</span></div>`).join("");
+      }
+      html += `<div class="sg-section">Popular searches</div>`;
+      html += `<div class="sg-chip-row">${popular.map((p) => `<button type="button" class="chip" data-term="${RH.escapeHtml(p.term)}">${RH.escapeHtml(p.term)}</button>`).join("")}</div>`;
+      suggestionsEl.innerHTML = html;
+    }
+    function renderResults(query) {
+      const matches = RH.Search.suggestions(query, 7);
+      activeIndex = -1;
+      if (!matches.length) {
+        suggestionsEl.innerHTML = `<div class="sg-empty">No matches for "${RH.escapeHtml(query)}". Press Enter to search anyway.</div>`;
+        return;
+      }
+      suggestionsEl.innerHTML =
+        `<div class="sg-section">Suggestions</div>` +
+        matches.map((r) => `<div class="sg-item" data-id="${r.id}" role="option"><i class="fa-regular fa-file-lines" aria-hidden="true"></i><div><div class="sg-title">${RH.highlight(r.title, query)}</div><div class="sg-meta">${RH.escapeHtml(r.category)} · ${RH.escapeHtml(r.callNumber)}</div></div></div>`).join("");
+    }
+    function open() {
+      suggestionsEl.classList.add("open");
+      inputEl.setAttribute("aria-expanded", "true");
+    }
+    function close() {
+      suggestionsEl.classList.remove("open");
+      inputEl.setAttribute("aria-expanded", "false");
+      activeIndex = -1;
+    }
+    function submit(query) {
+      query = (query || inputEl.value || "").trim();
+      if (!query) return;
+      RH.Store.addHistory(query);
+      close();
+      if (onSubmit) onSubmit(query);
+      else RH.navigate("resources", "q=" + encodeURIComponent(query));
+    }
+
+    const handleInput = RH.debounce(() => {
+      const v = inputEl.value.trim();
+      wrapEl.classList.toggle("has-value", !!v);
+      if (!v) renderIdle();
+      else renderResults(v);
+      open();
+    }, 160);
+
+    inputEl.addEventListener("input", handleInput);
+    inputEl.addEventListener("focus", () => {
+      if (!inputEl.value.trim()) renderIdle();
+      else renderResults(inputEl.value.trim());
+      open();
+    });
+    inputEl.addEventListener("keydown", (e) => {
+      const items = RH.qsa(".sg-item", suggestionsEl);
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (!items.length) return;
+        activeIndex = (activeIndex + 1) % items.length;
+        items.forEach((it, i) => it.classList.toggle("active", i === activeIndex));
+        items[activeIndex].scrollIntoView({ block: "nearest" });
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (!items.length) return;
+        activeIndex = (activeIndex - 1 + items.length) % items.length;
+        items.forEach((it, i) => it.classList.toggle("active", i === activeIndex));
+        items[activeIndex].scrollIntoView({ block: "nearest" });
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && items[activeIndex]) items[activeIndex].click();
+        else submit();
+      } else if (e.key === "Escape") {
+        close();
+        inputEl.blur();
+      }
+    });
+    suggestionsEl.addEventListener("click", (e) => {
+      const chip = e.target.closest("[data-term]");
+      const item = e.target.closest(".sg-item[data-id]");
+      if (chip) {
+        inputEl.value = chip.dataset.term;
+        submit(chip.dataset.term);
+      } else if (item) {
+        const r = RH.Catalog.getById(item.dataset.id);
+        if (r) {
+          RH.Store.addHistory(r.title);
+          RH.Store.logView(r.id);
+          close();
+          RH.navigate("resources", "q=" + encodeURIComponent(r.title));
+        }
+      }
+    });
+    if (clearEl) {
+      clearEl.addEventListener("click", () => {
+        inputEl.value = "";
+        wrapEl.classList.remove("has-value");
+        inputEl.focus();
+        renderIdle();
+      });
+    }
+    document.addEventListener("click", (e) => {
+      if (!wrapEl.contains(e.target)) close();
+    });
+    const form = inputEl.closest("form");
+    if (form) form.addEventListener("submit", (e) => { e.preventDefault(); submit(); });
+    return { submit, close };
+  }
+  RH.SearchWidget = { attach: attachSearchWidget };
+
+  /* =========================================================
+     NAV CHROME (theme, mobile menu, bookmark badge, footer year)
+     ========================================================= */
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    RH.qsa(".theme-toggle").forEach((btn) => {
+      const icon = btn.querySelector("i");
+      if (icon) icon.className = theme === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+      btn.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+    });
+  }
+  function initChrome() {
+    applyTheme(RH.Store.getTheme());
+    RH.qsa(".theme-toggle").forEach((btn) =>
+      btn.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+        const next = current === "dark" ? "light" : "dark";
+        RH.Store.setTheme(next);
+        applyTheme(next);
+      })
+    );
+
+    const toggle = RH.qs(".nav-toggle");
+    const nav = RH.qs(".main-nav");
+    if (toggle && nav) {
+      toggle.addEventListener("click", () => {
+        const open = nav.classList.toggle("open");
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.innerHTML = open ? '<i class="fa-solid fa-xmark" aria-hidden="true"></i>' : '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+        document.body.style.overflow = open ? "hidden" : "";
+      });
+      RH.qsa("a", nav).forEach((a) =>
+        a.addEventListener("click", () => {
+          nav.classList.remove("open");
+          toggle.setAttribute("aria-expanded", "false");
+          toggle.innerHTML = '<i class="fa-solid fa-bars" aria-hidden="true"></i>';
+          document.body.style.overflow = "";
+        })
+      );
+    }
+
+    function updateBookmarkBadge() {
+      const count = RH.Store.getBookmarks().length;
+      RH.qsa(".bookmark-count").forEach((el) => {
+        el.textContent = count;
+        el.style.display = count > 0 ? "inline-flex" : "none";
+      });
+    }
+    document.addEventListener("rh:bookmarks-changed", updateBookmarkBadge);
+    updateBookmarkBadge();
+    RH.qsa(".footer-year").forEach((el) => (el.textContent = new Date().getFullYear()));
+  }
+
+  /* =========================================================
+     ROUTE: HOME
+     ========================================================= */
+  function initHome() {
+    const wrap = document.getElementById("heroSearchWrap");
+    const input = document.getElementById("heroSearchInput");
+    const suggestions = document.getElementById("heroSuggestions");
+    const clear = document.getElementById("heroSearchClear");
+    if (wrap && input) RH.SearchWidget.attach({ wrapEl: wrap, inputEl: input, suggestionsEl: suggestions, clearEl: clear });
+  }
+  function renderHome() {
+    const all = RH.Catalog.all();
+    const cats = RH.Catalog.categories();
+    const avgRating = all.reduce((sum, r) => sum + r.rating, 0) / all.length;
+    animateNumber(document.getElementById("statResources"), all.length);
+    animateNumber(document.getElementById("statCategories"), cats.length);
+    const ratingEl = document.getElementById("statRating");
+    if (ratingEl) ratingEl.textContent = avgRating.toFixed(1);
+
+    const catGrid = document.getElementById("homeCategoryGrid");
+    if (catGrid) {
+      const topCats = cats.slice().sort((a, b) => b.count - a.count).slice(0, 8);
+      catGrid.innerHTML = topCats
+        .map((c) => `<a class="category-card" href="#resources?category=${encodeURIComponent(c.key)}"><span class="cc-code mono">${RH.escapeHtml(c.prefix)}</span><span class="cc-name">${RH.escapeHtml(c.name)}</span><span class="cc-count">${c.count} resource${c.count === 1 ? "" : "s"}</span></a>`)
+        .join("");
+    }
+
+    const latestGrid = document.getElementById("homeLatestGrid");
+    if (latestGrid) {
+      const list = RH.Catalog.sort(RH.Catalog.all(), "newest").slice(0, 6);
+      RH.Catalog.renderGrid(latestGrid, list);
+      RH.Catalog.bindCardEvents(latestGrid);
+    }
+
+    const trendWrap = document.getElementById("homeTrendList");
+    if (trendWrap) {
+      const views = RH.Store.getViewCounts();
+      const ranked = all.map((r) => ({ r, v: views[r.id] || 0 })).sort((a, b) => b.v - a.v || b.r.rating - a.r.rating).slice(0, 5);
+      const max = Math.max(1, ranked[0]?.v || 1);
+      trendWrap.innerHTML = ranked
+        .map((item, i) => `<a class="trend-row" href="#resources?q=${encodeURIComponent(item.r.title)}"><span class="trend-rank mono">${i + 1}</span><span class="trend-name">${RH.escapeHtml(item.r.title)}</span><span class="trend-bar-track"><span class="trend-bar-fill" style="width:${item.v ? (item.v / max) * 100 : 6}%"></span></span><span class="trend-val">${item.v} view${item.v === 1 ? "" : "s"}</span></a>`)
+        .join("");
+    }
+  }
+  function animateNumber(el, target) {
+    if (!el) return;
+    let current = 0;
+    const step = Math.max(1, Math.ceil(target / 30));
+    const tick = () => {
+      current = Math.min(target, current + step);
+      el.textContent = current;
+      if (current < target) requestAnimationFrame(tick);
+    };
+    tick();
+  }
+
+  /* =========================================================
+     ROUTE: RESOURCES
+     ========================================================= */
+  const PAGE_SIZE = 12;
+  const resState = { query: "", categories: [], difficulties: [], types: [], languages: [], minRating: 0, sort: "relevance", visible: PAGE_SIZE };
+  let resFiltered = [];
+  let resInitialized = false;
+
+  function initResourcesOnce() {
+    if (resInitialized) return;
+    resInitialized = true;
+    buildFilterUI();
+    wireResControls();
+    wireResSearch();
+  }
+  function buildFilterUI() {
+    const catWrap = document.getElementById("categoryFilters");
+    const cats = RH.Catalog.categories().slice().sort((a, b) => a.name.localeCompare(b.name));
+    catWrap.innerHTML = cats.map((c) => `<label class="filter-option"><input type="checkbox" value="${c.key}" data-group="categories">${RH.escapeHtml(c.name)}<span class="filter-count">${c.count}</span></label>`).join("");
+
+    const diffWrap = document.getElementById("difficultyFilters");
+    ["Beginner", "Intermediate", "Advanced"].forEach((d) => {
+      const count = RH.Catalog.all().filter((r) => r.difficulty === d).length;
+      diffWrap.insertAdjacentHTML("beforeend", `<label class="filter-option"><input type="checkbox" value="${d}" data-group="difficulties">${d}<span class="filter-count">${count}</span></label>`);
+    });
+
+    const typeWrap = document.getElementById("typeFilters");
+    RH.Catalog.facetValues("type").forEach((t) => {
+      const count = RH.Catalog.all().filter((r) => r.type === t).length;
+      typeWrap.insertAdjacentHTML("beforeend", `<label class="filter-option"><input type="checkbox" value="${RH.escapeHtml(t)}" data-group="types">${RH.escapeHtml(t)}<span class="filter-count">${count}</span></label>`);
+    });
+
+    const langWrap = document.getElementById("languageFilters");
+    RH.Catalog.facetValues("language").forEach((l) => {
+      const count = RH.Catalog.all().filter((r) => r.language === l).length;
+      langWrap.insertAdjacentHTML("beforeend", `<label class="filter-option"><input type="checkbox" value="${RH.escapeHtml(l)}" data-group="languages">${RH.escapeHtml(l)}<span class="filter-count">${count}</span></label>`);
+    });
+  }
+  function wireResControls() {
+    document.querySelectorAll('.filters-panel input[type="checkbox"]').forEach((cb) => {
+      cb.addEventListener("change", () => {
+        const group = cb.dataset.group;
+        const set = new Set(resState[group]);
+        if (cb.checked) set.add(cb.value);
+        else set.delete(cb.value);
+        resState[group] = Array.from(set);
+        resState.visible = PAGE_SIZE;
+        applyAndRenderResources();
+      });
+    });
+    document.getElementById("ratingFilter").addEventListener("change", (e) => {
+      resState.minRating = parseFloat(e.target.value) || 0;
+      resState.visible = PAGE_SIZE;
+      applyAndRenderResources();
+    });
+    document.getElementById("sortSelect").addEventListener("change", (e) => {
+      resState.sort = e.target.value;
+      RH.setParam("sort", resState.sort === "relevance" ? null : resState.sort);
+      applyAndRenderResources();
+    });
+    document.getElementById("clearFiltersBtn").addEventListener("click", () => {
+      resState.categories = [];
+      resState.difficulties = [];
+      resState.types = [];
+      resState.languages = [];
+      resState.minRating = 0;
+      resState.query = "";
+      resState.visible = PAGE_SIZE;
+      document.getElementById("resSearchInput").value = "";
+      document.getElementById("resSearchWrap").classList.remove("has-value");
+      document.querySelectorAll('.filters-panel input[type="checkbox"]').forEach((cb) => (cb.checked = false));
+      document.getElementById("ratingFilter").value = "0";
+      RH.setParam("q", null);
+      RH.setParam("category", null);
+      applyAndRenderResources();
+      RH.toast("Filters cleared", "info");
+    });
+    document.getElementById("loadMoreBtn").addEventListener("click", () => {
+      resState.visible += PAGE_SIZE;
+      renderResources();
+    });
+    if ("IntersectionObserver" in window) {
+      const sentinel = document.getElementById("scrollSentinel");
+      new IntersectionObserver(
+        (entries) => entries.forEach((entry) => {
+          if (entry.isIntersecting && resState.visible < resFiltered.length && document.getElementById("route-resources").style.display !== "none") {
+            resState.visible += PAGE_SIZE;
+            renderResources();
+          }
+        }),
+        { rootMargin: "200px" }
+      ).observe(sentinel);
+    }
+  }
+  function wireResSearch() {
+    const wrap = document.getElementById("resSearchWrap");
+    const input = document.getElementById("resSearchInput");
+    const suggestions = document.getElementById("resSuggestions");
+    const clear = document.getElementById("resSearchClear");
+    RH.SearchWidget.attach({
+      wrapEl: wrap,
+      inputEl: input,
+      suggestionsEl: suggestions,
+      clearEl: clear,
+      onSubmit: (q) => {
+        resState.query = q;
+        resState.visible = PAGE_SIZE;
+        RH.setParam("q", q);
+        applyAndRenderResources();
+      },
+    });
+    input.addEventListener(
+      "input",
+      RH.debounce(() => {
+        resState.query = input.value.trim();
+        resState.visible = PAGE_SIZE;
+        RH.setParam("q", resState.query || null);
+        applyAndRenderResources();
+      }, 200)
+    );
+  }
+  function hydrateResourcesFromURL() {
+    const q = RH.getParam("q") || "";
+    const category = RH.getParam("category");
+    const sort = RH.getParam("sort");
+    resState.query = q;
+    resState.categories = category ? [category] : [];
+    resState.sort = sort || "relevance";
+    resState.visible = PAGE_SIZE;
+
+    document.getElementById("resSearchInput").value = q;
+    document.getElementById("resSearchWrap").classList.toggle("has-value", !!q);
+    document.querySelectorAll('.filters-panel input[type="checkbox"]').forEach((cb) => {
+      cb.checked = resState[cb.dataset.group].includes(cb.value);
+    });
+    document.getElementById("ratingFilter").value = "0";
+    resState.minRating = 0;
+    document.getElementById("sortSelect").value = resState.sort;
+  }
+  function applyAndRenderResources() {
+    resFiltered = RH.Catalog.filter({
+      query: resState.query,
+      categories: resState.categories,
+      difficulties: resState.difficulties,
+      types: resState.types,
+      languages: resState.languages,
+      minRating: resState.minRating,
+    });
+    if (resState.sort !== "relevance" || !resState.query) {
+      resFiltered = RH.Catalog.sort(resFiltered, resState.sort === "relevance" ? "newest" : resState.sort);
+    }
+    renderResources();
+  }
+  function renderResources() {
+    const grid = document.getElementById("resourceGrid");
+    const slice = resFiltered.slice(0, resState.visible);
+    RH.Catalog.renderGrid(grid, slice, { query: resState.query });
+    RH.Catalog.bindCardEvents(grid);
+    const countEl = document.getElementById("resultsCount");
+    countEl.textContent = resFiltered.length ? `Showing ${slice.length} of ${resFiltered.length} resource${resFiltered.length === 1 ? "" : "s"}` : "No resources match your filters";
+    const loadMore = document.getElementById("loadMoreBtn");
+    loadMore.style.display = resState.visible < resFiltered.length ? "inline-flex" : "none";
+  }
+  function enterResources() {
+    initResourcesOnce();
+    hydrateResourcesFromURL();
+    applyAndRenderResources();
+  }
+
+  /* =========================================================
+     ROUTE: CATEGORIES
+     ========================================================= */
+  let categoriesInitialized = false;
+  function enterCategories() {
+    const grid = document.getElementById("allCategoryGrid");
+    const input = document.getElementById("catFilterInput");
+    const cats = RH.Catalog.categories().slice().sort((a, b) => a.name.localeCompare(b.name));
+    function renderCats(filterText) {
+      const q = (filterText || "").toLowerCase().trim();
+      const list = q ? cats.filter((c) => c.name.toLowerCase().includes(q) || c.prefix.toLowerCase().includes(q)) : cats;
+      if (!list.length) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="es-icon"><i class="fa-regular fa-folder-open" aria-hidden="true"></i></div><h3>No matching categories</h3><p>Try a different search term.</p></div>`;
+        return;
+      }
+      grid.innerHTML = list.map((c) => `<a class="category-card" href="#resources?category=${encodeURIComponent(c.key)}"><span class="cc-code mono">${RH.escapeHtml(c.prefix)}</span><span class="cc-name">${RH.escapeHtml(c.name)}</span><span class="cc-count">${c.count} resource${c.count === 1 ? "" : "s"}</span></a>`).join("");
+    }
+    renderCats(input.value);
+    if (!categoriesInitialized) {
+      categoriesInitialized = true;
+      input.addEventListener("input", RH.debounce(() => renderCats(input.value), 120));
+    }
+  }
+
+  /* =========================================================
+     ROUTE: TRENDING
+     ========================================================= */
+  const charts = {};
+  const PALETTE = ["#1F6F5C", "#45BC9C", "#B5760A", "#E7AE4B", "#5B5A55", "#8A8880", "#3F8CBF", "#B23A34", "#7C5CBF", "#3F7D5C"];
+  let trendingInitialized = false;
+
+  function baseChartOptions(extra) {
+    return Object.assign({ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { precision: 0 } } } }, extra || {});
+  }
+  function enterTrending() {
+    renderCategoryChart();
+    renderBookmarkChart();
+    renderTrendingChart();
+    renderSearchChart();
+    renderViewedList();
+    renderBookmarkedList();
+    renderNewestList();
+    renderCategoriesList();
+    renderSearchesList();
+    if (!trendingInitialized) {
+      trendingInitialized = true;
+      wireTrendingTabs();
+      document.addEventListener("rh:bookmarks-changed", () => {
+        if (document.getElementById("route-trending").style.display !== "none") {
+          renderBookmarkChart();
+          renderBookmarkedList();
+        }
+      });
+    }
+  }
+  function renderCategoryChart() {
+    const cats = RH.Catalog.categories().slice().sort((a, b) => b.count - a.count).slice(0, 10);
+    const ctx = document.getElementById("chartCategories");
+    if (charts.cat) charts.cat.destroy();
+    charts.cat = new Chart(ctx, { type: "bar", data: { labels: cats.map((c) => c.name), datasets: [{ label: "Resources", data: cats.map((c) => c.count), backgroundColor: "#1F6F5C", borderRadius: 6, maxBarThickness: 28 }] }, options: baseChartOptions({ indexAxis: "y", scales: { x: { beginAtZero: true, ticks: { precision: 0 } }, y: { grid: { display: false } } } }) });
+  }
+  function renderBookmarkChart() {
+    const ids = RH.Store.getBookmarks();
+    const resources = RH.Catalog.getByIds(ids);
+    const byCategory = {};
+    resources.forEach((r) => (byCategory[r.category] = (byCategory[r.category] || 0) + 1));
+    const labels = Object.keys(byCategory);
+    const ctx = document.getElementById("chartBookmarks");
+    if (charts.bm) charts.bm.destroy();
+    if (!labels.length) {
+      charts.bm = new Chart(ctx, { type: "doughnut", data: { labels: ["No bookmarks yet"], datasets: [{ data: [1], backgroundColor: ["#DEDAD0"] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom", labels: { boxWidth: 10 } } } } });
+      return;
+    }
+    charts.bm = new Chart(ctx, { type: "doughnut", data: { labels, datasets: [{ data: labels.map((l) => byCategory[l]), backgroundColor: PALETTE }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 11 } } } } } });
+  }
+  function renderTrendingChart() {
+    const views = RH.Store.getViewCounts();
+    const ranked = RH.Catalog.all().map((r) => ({ r, v: views[r.id] || 0 })).sort((a, b) => b.v - a.v).slice(0, 8);
+    const ctx = document.getElementById("chartTrending");
+    if (charts.trend) charts.trend.destroy();
+    charts.trend = new Chart(ctx, { type: "bar", data: { labels: ranked.map((x) => (x.r.title.length > 22 ? x.r.title.slice(0, 20) + "…" : x.r.title)), datasets: [{ label: "Views", data: ranked.map((x) => x.v), backgroundColor: "#B5760A", borderRadius: 6, maxBarThickness: 28 }] }, options: baseChartOptions() });
+  }
+  function renderSearchChart() {
+    const counts = RH.Store.getSearchCounts();
+    const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const ctx = document.getElementById("chartSearch");
+    if (charts.search) charts.search.destroy();
+    if (!entries.length) {
+      charts.search = new Chart(ctx, { type: "bar", data: { labels: ["No searches yet"], datasets: [{ data: [0], backgroundColor: "#DEDAD0" }] }, options: baseChartOptions() });
+      return;
+    }
+    charts.search = new Chart(ctx, { type: "bar", data: { labels: entries.map((e) => e[0]), datasets: [{ label: "Searches", data: entries.map((e) => e[1]), backgroundColor: "#45BC9C", borderRadius: 6, maxBarThickness: 28 }] }, options: baseChartOptions() });
+  }
+  function renderViewedList() {
+    const views = RH.Store.getViewCounts();
+    const ranked = RH.Catalog.all().map((r) => ({ r, v: views[r.id] || 0 })).sort((a, b) => b.v - a.v).slice(0, 10);
+    const max = Math.max(1, ranked[0]?.v || 1);
+    const wrap = document.getElementById("listViewed");
+    if (!ranked.some((x) => x.v > 0)) {
+      wrap.innerHTML = `<p style="color:var(--ink-faint);">Visit a few resources and this list will fill up with your most viewed picks.</p>`;
+      return;
+    }
+    wrap.innerHTML = ranked.map((x, i) => `<a class="trend-row" href="#resources?q=${encodeURIComponent(x.r.title)}"><span class="trend-rank mono">${i + 1}</span><span class="trend-name">${RH.escapeHtml(x.r.title)}</span><span class="trend-bar-track"><span class="trend-bar-fill" style="width:${(x.v / max) * 100}%"></span></span><span class="trend-val">${x.v} view${x.v === 1 ? "" : "s"}</span></a>`).join("");
+  }
+  function renderBookmarkedList() {
+    const resources = RH.Catalog.getByIds(RH.Store.getBookmarks());
+    const wrap = document.getElementById("listBookmarked");
+    if (!resources.length) {
+      wrap.innerHTML = `<p style="color:var(--ink-faint);">You haven't bookmarked anything yet. <a href="#resources" style="color:var(--accent); font-weight:600;">Browse resources</a> to add some.</p>`;
+      return;
+    }
+    wrap.innerHTML = resources.map((r) => `<a class="trend-row" href="#resources?q=${encodeURIComponent(r.title)}"><span class="trend-rank"><i class="fa-solid fa-bookmark" style="color:var(--accent);" aria-hidden="true"></i></span><span class="trend-name">${RH.escapeHtml(r.title)}</span><span class="trend-val mono">${RH.escapeHtml(r.category)}</span></a>`).join("");
+  }
+  function renderNewestList() {
+    const list = RH.Catalog.sort(RH.Catalog.all(), "newest").slice(0, 6);
+    const grid = document.getElementById("listNewest");
+    RH.Catalog.renderGrid(grid, list);
+    RH.Catalog.bindCardEvents(grid);
+  }
+  function renderCategoriesList() {
+    const cats = RH.Catalog.categories().slice().sort((a, b) => b.count - a.count).slice(0, 10);
+    const max = Math.max(1, cats[0]?.count || 1);
+    document.getElementById("listCategories").innerHTML = cats.map((c, i) => `<a class="trend-row" href="#resources?category=${encodeURIComponent(c.key)}"><span class="trend-rank mono">${i + 1}</span><span class="trend-name">${RH.escapeHtml(c.name)}</span><span class="trend-bar-track"><span class="trend-bar-fill" style="width:${(c.count / max) * 100}%"></span></span><span class="trend-val">${c.count} items</span></a>`).join("");
+  }
+  function renderSearchesList() {
+    const popular = RH.Search.popularSearches(10);
+    const max = Math.max(1, popular[0]?.count || 1);
+    document.getElementById("listSearches").innerHTML = popular.map((p, i) => `<a class="trend-row" href="#resources?q=${encodeURIComponent(p.term)}"><span class="trend-rank mono">${i + 1}</span><span class="trend-name">${RH.escapeHtml(p.term)}</span><span class="trend-bar-track"><span class="trend-bar-fill" style="width:${p.count ? (p.count / max) * 100 : 4}%"></span></span><span class="trend-val">${p.count} search${p.count === 1 ? "" : "es"}</span></a>`).join("");
+  }
+  function wireTrendingTabs() {
+    const tabs = RH.qsa(".tab-btn");
+    tabs.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        tabs.forEach((b) => { b.classList.remove("active"); b.setAttribute("aria-selected", "false"); });
+        btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
+        RH.qsa(".tab-panel").forEach((p) => p.classList.remove("active"));
+        document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+      });
+    });
+  }
+
+  /* =========================================================
+     ROUTE: BOOKMARKS
+     ========================================================= */
+  let bookmarksInitialized = false;
+  function enterBookmarks() {
+    renderBookmarksPage();
+    if (!bookmarksInitialized) {
+      bookmarksInitialized = true;
+      document.addEventListener("rh:bookmarks-changed", () => {
+        if (document.getElementById("route-bookmarks").style.display !== "none") renderBookmarksPage();
+      });
+      wireBookmarksToolbar();
+    }
+  }
+  function renderBookmarksPage() {
+    const resources = RH.Catalog.getByIds(RH.Store.getBookmarks());
+    const grid = document.getElementById("bookmarkGrid");
+    const label = document.getElementById("bookmarkCountLabel");
+    label.textContent = `${resources.length} saved resource${resources.length === 1 ? "" : "s"}`;
+    if (!resources.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="es-icon"><i class="fa-regular fa-bookmark" aria-hidden="true"></i></div><h3>No bookmarks yet</h3><p>Tap the bookmark icon on any resource card to save it here for later.</p><a class="btn btn-primary" href="#resources" style="margin-top:14px;">Browse resources</a></div>`;
+      return;
+    }
+    RH.Catalog.renderGrid(grid, resources);
+    RH.Catalog.bindCardEvents(grid);
+  }
+  function wireBookmarksToolbar() {
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const ids = RH.Store.getBookmarks();
+      if (!ids.length) return RH.toast("No bookmarks to export yet", "info");
+      const data = JSON.stringify({ exportedAt: new Date().toISOString(), bookmarks: ids }, null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "resource-hub-bookmarks.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      RH.toast("Bookmarks exported", "success");
+    });
+    document.getElementById("importInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          const ids = Array.isArray(parsed) ? parsed : parsed.bookmarks;
+          if (!Array.isArray(ids)) throw new Error("Invalid format");
+          const valid = ids.filter((id) => RH.Catalog.getById(id));
+          const merged = Array.from(new Set([...RH.Store.getBookmarks(), ...valid]));
+          RH.Store.setBookmarks(merged);
+          RH.toast(`Imported ${valid.length} bookmark${valid.length === 1 ? "" : "s"}`, "success");
+        } catch (err) {
+          RH.toast("Could not import — invalid bookmarks file", "error");
+        } finally {
+          e.target.value = "";
+        }
+      };
+      reader.readAsText(file);
+    });
+    document.getElementById("clearBookmarksBtn").addEventListener("click", () => {
+      const ids = RH.Store.getBookmarks();
+      if (!ids.length) return RH.toast("You have no bookmarks to clear", "info");
+      const doClear = () => { RH.Store.clearBookmarks(); RH.toast("All bookmarks cleared", "success"); };
+      if (global.Swal) {
+        Swal.fire({ title: "Clear all bookmarks?", text: `This removes all ${ids.length} saved resources from this browser. This can't be undone.`, icon: "warning", showCancelButton: true, confirmButtonText: "Clear all", confirmButtonColor: "#B23A34", cancelButtonColor: "#5B5A55" }).then((result) => { if (result.isConfirmed) doClear(); });
+      } else if (confirm(`Clear all ${ids.length} bookmarks? This can't be undone.`)) {
+        doClear();
+      }
+    });
+  }
+
+  /* =========================================================
+     ROUTE: FAQ
+     ========================================================= */
+  const FAQS = [
+    { q: "Is Resource Hub really free?", a: "Yes — every feature on this site is free, including search, filters, bookmarks, and trending statistics. There are no premium tiers, subscriptions, or hidden paywalls." },
+    { q: "Do I need to create an account?", a: "No. Resource Hub has no login system. Your bookmarks and search history are saved locally in your own browser, so there's nothing to sign up for and nothing we can lose." },
+    { q: "Where is my data stored?", a: "Entirely on your device, using your browser's local storage. Nothing is uploaded to a server, because this site doesn't have one — it's a frontend-only application." },
+    { q: "Will my bookmarks sync across devices?", a: "Not automatically, since there's no account system. Use the Export button on the Bookmarks page to save a JSON file, then Import it on another device or browser." },
+    { q: "How are resources chosen for the catalog?", a: "Each entry is hand-picked for being genuinely free, actively maintained, and well-regarded by learners — favoring official documentation, universities, and long-standing community projects." },
+    { q: "What do the call numbers mean?", a: "Every category has its own call-number range, similar to a library catalog — a quick visual way to tell which drawer a resource belongs to." },
+    { q: "How does the 'Trending' page calculate rankings?", a: "Most Viewed and Search Activity reflect your own activity in this browser. Popular Categories and Recently Added reflect the catalog itself." },
+    { q: "Can I suggest a new resource or category?", a: "Absolutely — use the Contact page to send a suggestion." },
+    { q: "Does the site work offline?", a: "Once the page has loaded, browsing, searching, filtering, and bookmarking all work without a network connection, since the resource data ships with the page itself." },
+    { q: "Is there a dark mode?", a: "Yes — use the moon/sun icon in the top navigation bar. Your preference is remembered for future visits." },
+  ];
+  let faqInitialized = false;
+  function enterFaq() {
+    if (faqInitialized) return;
+    faqInitialized = true;
+    const list = document.getElementById("faqList");
+    list.innerHTML = FAQS.map((item, i) => `
+      <div class="faq-item" id="faq-${i}">
+        <h3 style="margin:0;"><button class="faq-q" aria-expanded="false" aria-controls="faq-a-${i}"><span>${RH.escapeHtml(item.q)}</span><i class="fa-solid fa-plus" aria-hidden="true"></i></button></h3>
+        <div class="faq-a" id="faq-a-${i}" role="region"><p>${RH.escapeHtml(item.a)}</p></div>
+      </div>`).join("");
+    RH.qsa(".faq-item", list).forEach((item) => {
+      const btn = item.querySelector(".faq-q");
+      btn.addEventListener("click", () => {
+        const open = item.classList.toggle("open");
+        btn.setAttribute("aria-expanded", String(open));
+      });
+    });
+  }
+
+  /* =========================================================
+     ROUTE: CONTACT
+     ========================================================= */
+  const CONTACT_RULES = {
+    nameInput: { field: "field-name", validate: (v) => v.trim().length >= 2 },
+    emailInput: { field: "field-email", validate: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+    subjectInput: { field: "field-subject", validate: (v) => v.trim().length > 0 },
+    messageInput: { field: "field-message", validate: (v) => v.trim().length >= 10 },
+  };
+  let contactInitialized = false;
+  function initContact() {
+    if (contactInitialized) return;
+    contactInitialized = true;
+    const form = document.getElementById("contactForm");
+    if (!form) return;
+    Object.keys(CONTACT_RULES).forEach((id) => {
+      const input = document.getElementById(id);
+      input.addEventListener("blur", () => validateContactField(id));
+      input.addEventListener("input", () => {
+        if (document.getElementById(CONTACT_RULES[id].field).classList.contains("invalid")) validateContactField(id);
+      });
+    });
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const allValid = Object.keys(CONTACT_RULES).every((id) => validateContactField(id));
+      if (!allValid) {
+        RH.toast("Please fix the highlighted fields", "error");
+        const firstInvalid = form.querySelector(".form-field.invalid input, .form-field.invalid textarea, .form-field.invalid select");
+        if (firstInvalid) firstInvalid.focus();
+        return;
+      }
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Sending…';
+      setTimeout(() => {
+        RH.toast("Message sent! (Demo only — there's no backend, so nothing was actually transmitted.)", "success");
+        form.reset();
+        Object.keys(CONTACT_RULES).forEach((id) => document.getElementById(CONTACT_RULES[id].field).classList.remove("invalid"));
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send message <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>';
+      }, 700);
+    });
+  }
+  function validateContactField(id) {
+    const rule = CONTACT_RULES[id];
+    const input = document.getElementById(id);
+    const fieldEl = document.getElementById(rule.field);
+    const ok = rule.validate(input.value || "");
+    fieldEl.classList.toggle("invalid", !ok);
+    input.setAttribute("aria-invalid", String(!ok));
+    return ok;
+  }
+
+  /* =========================================================
+     BOOT
+     ========================================================= */
+  document.addEventListener("DOMContentLoaded", () => {
+    initChrome();
+    initHome();
+    initContact();
+
+    RH.onRoute("home", renderHome);
+    RH.onRoute("resources", enterResources);
+    RH.onRoute("categories", enterCategories);
+    RH.onRoute("trending", enterTrending);
+    RH.onRoute("bookmarks", enterBookmarks);
+    RH.onRoute("faq", enterFaq);
+
+    RH.__initRouter();
+    if (!global.location.hash) global.history.replaceState(null, "", "#home");
+  });
+
+  global.RH = RH;
+})(window);
+
+</script>
+</body>
+</html>
